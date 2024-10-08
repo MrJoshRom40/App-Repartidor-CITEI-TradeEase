@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Reporte">
+
+    <include
+        layout="@layout/toolbar"/>
+
+    <EditText
+        android:id="@+id/numeroventa_reporte"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:hint="Número de venta"
+        />
+    <EditText
+        android:id="@+id/cantidad_reporte"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:inputType="number"
+        android:hint="Cantidad"
+        />
+    <EditText
+        android:id="@+id/comentarios_reporte"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:hint="Comentarios"
+        />
+    <Button
+        android:id="@+id/Send_reporte"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:backgroundTint="@color/rojo"
+        android:text="Enviar"
+        android:textSize="25dp"
+        android:textColor="@color/black"
+        />
+</LinearLayout>
