@@ -7,7 +7,7 @@ public class Pedido {
     String NumeroDeVenta;
     String EstadoDelpedido;
 
-
+//hols
     public String getNombrecliente() {
         return Nombrecliente;
     }
