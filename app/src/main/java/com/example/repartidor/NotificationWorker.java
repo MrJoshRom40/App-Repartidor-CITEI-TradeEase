@@ -1,12 +1,17 @@
 package com.example.repartidor;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -17,27 +22,34 @@ import java.util.Calendar;
  * Clase de la notificacion persistente de las 6:30pm
  */
 
-public class NotificationWorker extends Worker {
+public class NotificationWorker extends Service {
 
     public static final String CHANNEL_ID = "persistent_notification_channel";
     public static final int NOTIFICATION_ID = 1;
 
-    public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-    }
+    // ...
 
-    @NonNull
     @Override
-    public Result doWork() {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent1 = new Intent(this, NotificationWorker.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent1, PendingIntent.FLAG_IMMUTABLE);
 
         Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
-            return Result.success();  // No mostrar notificación en fin de semana
-        }
-        // Crear la notificación
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 18); // 6 PM
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         showNotification();
-        return Result.success();
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void showNotification() {

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         contra = findViewById(R.id.pass);
         logear = findViewById(R.id.login);
 
-        WorkScheduler.scheduleDailyWork(this, NotificationWorker.class, 18, 30);
+
 
         logear.setOnClickListener(new View.OnClickListener() {//funcion para logear
             @Override
