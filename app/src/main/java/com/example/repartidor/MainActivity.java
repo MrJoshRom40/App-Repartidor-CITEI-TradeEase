@@ -1,16 +1,19 @@
 package com.example.repartidor;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.widget.ListView;
-import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,12 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import Global.PedidosAsignados;
 import Pojo.Pedido;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private Button logear;
 
     public Repartidor repartidor = new Repartidor();
+
+    private static final String PREFS_NAME = "NotificationPrefs";
+    private static final String NOTIFICATION_SCHEDULED_KEY = "isNotificationScheduled";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +50,53 @@ public class MainActivity extends AppCompatActivity {
         contra = findViewById(R.id.pass);
         logear = findViewById(R.id.login);
 
+        // Programar la notificación al iniciar la actividad
+        //scheduleNotification();
 
-
-        logear.setOnClickListener(new View.OnClickListener() {//funcion para logear
+        logear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String nomina = usuario.getText().toString().trim();
                 String clave = contra.getText().toString().trim();
-                login(nomina,clave);
+                login(nomina, clave);
             }
         });
     }
 
-    private void login(String nomina, String clave){
+    void scheduleNotification() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isNotificationScheduled = sharedPreferences.getBoolean(NOTIFICATION_SCHEDULED_KEY, false);
+
+        if (!isNotificationScheduled) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, NotificationWorker.class);
+            // Cambiar el identificador del PendingIntent para que sea único para cada día
+            for (int dayOfWeek = Calendar.MONDAY; dayOfWeek <= Calendar.FRIDAY; dayOfWeek++) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, dayOfWeek, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+                calendar.set(Calendar.HOUR_OF_DAY, 18); // 6 PM
+                calendar.set(Calendar.MINUTE, 30); // 30 minutos
+                calendar.set(Calendar.SECOND, 0); // 0 segundos
+
+                // Reprogramar para el siguiente día si ya pasó la hora de hoy
+                if (Calendar.getInstance().after(calendar)) {
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                }
+
+                // Programar la notificación
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+            }
+
+            // Guardar el estado en SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(NOTIFICATION_SCHEDULED_KEY, true);
+            editor.apply();
+        }
+    }
+
+    private void login(String nomina, String clave) {
         String url = "http://192.168.50.108/citei/Login.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -94,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 // Enviar los parámetros a través de POST
@@ -110,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.50.108/citei/Pedidos.php?nomina=" + nomina; // Agregar nomina a la URL
+        String url = "http://192.168.50.108/citei/Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -118,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Response", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    PedidosAsignados.Pedidos.clear(); // Asegúrate de limpiar la lista antes de cargar nuevos pedidos
+                    PedidosAsignados.Pedidos.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
-                        Pedido pedido = new Pedido(); // Crear un nuevo objeto pedido en cada iteración
+                        Pedido pedido = new Pedido();
                         pedido.setNombrecliente(obj.getString("NombreCompleto"));
                         pedido.setDireccion(obj.getString("DireccionCompleta"));
                         pedido.setTelefono(obj.getString("Telefono"));
@@ -143,9 +183,4 @@ public class MainActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-
-
-
-
-
 }
