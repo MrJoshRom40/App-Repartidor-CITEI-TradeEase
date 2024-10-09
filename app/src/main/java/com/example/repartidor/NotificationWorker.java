@@ -19,7 +19,7 @@ import androidx.work.WorkerParameters;
 import java.util.Calendar;
 
 /**
- * Clase de la notificacion persistente de las 6:30pm
+ * Clase de la notificacion persistente de las 6:30pm f
  */
 
 public class NotificationWorker extends Service {
