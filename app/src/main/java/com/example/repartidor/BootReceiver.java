@@ -8,8 +8,9 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            // Volver a programar las notificaciones
-            new MainActivity().scheduleNotification(); // Llama a tu método para programar
+            // Iniciar el servicio cuando el dispositivo arranca
+            Intent serviceIntent = new Intent(context, MyService.class);
+            context.startService(serviceIntent);
         }
     }
 }

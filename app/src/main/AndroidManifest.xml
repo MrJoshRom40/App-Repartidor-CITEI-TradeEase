@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Repartidor"
-        tools:targetApi="31">
+        tools:targetApi="34">
 
         <activity
             android:name=".Carga_Descarga"
@@ -55,8 +55,12 @@
         </activity>
 
         <receiver android:name=".NotificationWorker"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.repartidor.SHOW_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".BootReceiver"
             android:enabled="true"
             android:exported="true">
@@ -65,8 +69,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- Si tienes otros receivers para Continuar y Regresar, no es necesario que sean BroadcastReceiver -->
-        <!-- Asegúrate de que estas clases estén implementadas como Activities o BroadcastReceivers según sea necesario -->
+        <service android:name=".MyService"/>
         <receiver android:name=".Continuar" android:exported="true" />
         <receiver android:name=".Regresar" android:exported="true" />
 

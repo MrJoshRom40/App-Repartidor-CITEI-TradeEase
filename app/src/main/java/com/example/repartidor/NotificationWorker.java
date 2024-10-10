@@ -1,63 +1,74 @@
 package com.example.repartidor;
 
-import android.app.AlarmManager;
-import android.app.Notification;
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.RemoteInput;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.IBinder;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
-import java.util.Calendar;
-
-/**
- * Clase para la notificación persistente a las 6:30 PM
- */
 public class NotificationWorker extends BroadcastReceiver {
+
+    private static final String CHANNEL_ID = "canal_ejemplo";  // ID del canal de notificación
+    private static final int NOTIFICATION_ID = 1;  // ID de la notificación
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        showNotification(context);
+        if ("com.example.repartidor.SHOW_NOTIFICATION".equals(intent.getAction())) {
+            // Llamar al método para mostrar la notificación
+            crearCanalDeNotificacion(context);
+            showNotification(context);
+        }
     }
 
-    private void showNotification(Context context) {
-        String channelId = "default_channel_id";
-        String channelName = "Default Channel";
+    // Método para crear el canal de notificaciones
+    private void crearCanalDeNotificacion(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {  // Solo en Android 8.0 (API 26) o superior
+            CharSequence nombre = "Canal Ejemplo";
+            String descripcion = "Descripción del canal de ejemplo";
+            int importancia = NotificationManager.IMPORTANCE_HIGH;
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel canal = new NotificationChannel(CHANNEL_ID, nombre, importancia);
+            canal.setDescription(descripcion);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
+            // Registrar el canal en el sistema
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(canal);
+            }
         }
+    }
 
-        // Crear intents para las acciones de los botones
-        Intent option1Intent = new Intent(context, Regresar.class);
-        PendingIntent option1PendingIntent = PendingIntent.getActivity(context, 0, option1Intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    // Método para mostrar la notificación
+    @SuppressLint("MissingPermission")
+    private void showNotification(Context context) {
+        // Intent para la acción "Regresar"
+        Intent regresarIntent = new Intent(context, Regresar.class);
+        PendingIntent regresarPendingIntent = PendingIntent.getBroadcast(
+                context, 0, regresarIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        Intent option2Intent = new Intent(context, Continuar.class);
-        PendingIntent option2PendingIntent = PendingIntent.getActivity(context, 1, option2Intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Intent para la acción "Continuar"
+        Intent continuarIntent = new Intent(context, Continuar.class);
+        PendingIntent continuarPendingIntent = PendingIntent.getBroadcast(
+                context, 1, continuarIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Crear la notificación
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setContentTitle("CITEI TradeEase")
-                .setContentText("Oye mi \nchambeador ya\nson las 6:30 ;)")
-                .setSmallIcon(R.drawable.citei)
-                .setOngoing(true)  // Esto la hace persistente
-                .addAction(0, "Regresar", option1PendingIntent)  // Botón de Opción 1
-                .addAction(0, "Continuar", option2PendingIntent); // Botón de Opción 2
-
+        // Construir la notificación
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.citei)  // Icono de la notificación
+                .setContentTitle("Acción requerida")  // Título de la notificación
+                .setContentText("Elige una acción")  // Texto de la notificación
+                .setPriority(NotificationCompat.PRIORITY_HIGH)  // Prioridad de la notificación
+                .addAction(0, "Regresar", regresarPendingIntent)  // Acción "Regresar"
+                .addAction(0, "Continuar", continuarPendingIntent) // Acción "Continuar"
+                .setOngoing(true);
 
         // Mostrar la notificación
-        notificationManager.notify(1, builder.build());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());  // Mostrar la notificación con un ID
     }
 }
