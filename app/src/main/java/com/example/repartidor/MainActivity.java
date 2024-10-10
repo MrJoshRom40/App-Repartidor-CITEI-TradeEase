@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void login(String nomina, String clave) {
-        String url = "http://192.168.50.108/citei/Login.php";
+        String url = "http://192.168.0.254/citei/Login.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.50.108/citei/Pedidos.php?nomina=" + nomina;
+        String url = "http://192.168.0.254/citei/Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
