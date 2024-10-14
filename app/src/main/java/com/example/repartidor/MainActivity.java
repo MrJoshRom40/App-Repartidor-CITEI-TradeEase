@@ -1,14 +1,6 @@
 package com.example.repartidor;
 
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,9 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,9 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText usuario, contra;
     private Button logear;
 
+
     public Repartidor repartidor = new Repartidor();
 
-    private static final String CHANNEL_ID = "persistent_notification_channel";
+    public static String NOTIFICATION_CHANNEL_ID = "1001";
+    public static String default_notification_id = "default";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +61,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-
     private void login(String nomina, String clave) {
-        String url = "http://192.168.0.254/citei/Login.php";
+        String url = "http://192.168.50.108/citei/Login.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -129,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.0.254/citei/Pedidos.php?nomina=" + nomina;
+        String url = "http://192.168.50.108/citei/Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -161,5 +147,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(stringRequest);
+    }
+
+    private void scheduleNotification(){
+        Intent intent = new Intent(this, AlarmReceiver.class);
     }
 }
