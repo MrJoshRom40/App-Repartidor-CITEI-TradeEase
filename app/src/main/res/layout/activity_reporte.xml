@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".Reporte">
 
     <include
+        android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
     <EditText
@@ -22,6 +24,7 @@
         android:textSize="20sp"
         android:hint="Número de venta"
         />
+
     <EditText
         android:id="@+id/cantidad_reporte"
         android:layout_width="match_parent"
@@ -33,8 +36,9 @@
         android:gravity="center"
         android:textSize="20sp"
         android:inputType="number"
-        android:hint="Cantidad"
+        android:hint="+/-  Cantidad"
         />
+
     <EditText
         android:id="@+id/comentarios_reporte"
         android:layout_width="match_parent"
@@ -45,8 +49,9 @@
         android:textColor="@color/black"
         android:gravity="center"
         android:textSize="20sp"
-        android:hint="Comentarios"
+        android:hint="Comentarios\n(Opcionales)"
         />
+
     <Button
         android:id="@+id/Send_reporte"
         android:layout_width="match_parent"

@@ -13,6 +13,7 @@
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:gravity="center"
+        android:textColor="@color/white"
         android:text="CITEI\nTradeEase"
         android:textSize="30sp" />
 

@@ -1,6 +1,8 @@
 package com.example.repartidor;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button logear;
 
 
-    public Repartidor repartidor = new Repartidor();
+    public static Repartidor repartidor = new Repartidor();
 
     public static String NOTIFICATION_CHANNEL_ID = "1001";
     public static String default_notification_id = "default";
@@ -42,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         usuario = findViewById(R.id.usr);
         contra = findViewById(R.id.pass);
@@ -54,15 +55,20 @@ public class MainActivity extends AppCompatActivity {
         logear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nomina = usuario.getText().toString().trim();
-                String clave = contra.getText().toString().trim();
-                login(nomina, clave);
+                if(isEditTextEmpty(usuario) || isEditTextEmpty(contra)){
+                    Toast.makeText(MainActivity.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String nomina = usuario.getText().toString().trim();
+                    String clave = contra.getText().toString().trim();
+                    login(nomina, clave);
+                }
             }
         });
     }
 
     private void login(String nomina, String clave) {
-        String url = "http://192.168.50.108/citei/Login.php";
+        String url = "http://192.168.0.254/citei/Login.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -80,9 +86,13 @@ public class MainActivity extends AppCompatActivity {
                         repartidor.setNombre(nombre);
                         repartidor.setNomina(nomina);
 
+                        // Mostrar mensaje de bienvenida
+                        Toast.makeText(MainActivity.this, "Bienvenido " + repartidor.getNombre(), Toast.LENGTH_SHORT).show();
+
+                        // Cargar los pedidos solo después de haber logueado exitosamente
                         cargar(repartidor.getNomina());
 
-                        Toast.makeText(MainActivity.this, "Bienvenido " + repartidor.getNombre(), Toast.LENGTH_SHORT).show();
+                        // Iniciar la nueva actividad
                         Intent intent = new Intent(MainActivity.this, Inicio.class);
                         startActivity(intent);
                         finish();
@@ -102,20 +112,21 @@ public class MainActivity extends AppCompatActivity {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                // Enviar los parámetros a través de POST
                 Map<String, String> params = new HashMap<>();
                 params.put("nomina", nomina);
                 params.put("clave", clave);
                 return params;
             }
         };
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
 
+
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.50.108/citei/Pedidos.php?nomina=" + nomina;
+        String url = "http://192.168.0.254/citei/Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -147,6 +158,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(stringRequest);
+    }
+
+    public static String sendName(){
+        return repartidor.getNombre();
+    }
+
+    public static boolean isEditTextEmpty(EditText editText){
+        String txt = editText.getText().toString();
+        if(txt.isEmpty())
+            return true;
+        return false;
     }
 
     private void scheduleNotification(){

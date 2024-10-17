@@ -9,6 +9,7 @@
     tools:context=".Inicio">
 
     <include
+        android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView

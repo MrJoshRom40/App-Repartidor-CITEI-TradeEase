@@ -9,6 +9,10 @@
         android:title="Reporte"
         />
     <item
+        android:id="@+id/Descanso"
+        android:title="Descanso"
+        />
+    <item
         android:id="@+id/Salir"
         android:title="Salir"
         />
