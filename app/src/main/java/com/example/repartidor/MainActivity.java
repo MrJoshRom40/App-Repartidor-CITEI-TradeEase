@@ -68,21 +68,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void login(String nomina, String clave) {
-        String url = "http://192.168.0.254/citei/Login.php";
+        // Crear la URL con los parámetros 'nomina' y 'clave'
+        String url = "http://192.168.1.79/Repartidor/login.php?nomina=" + nomina + "&clave=" + clave;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
+                    // Verificar si la respuesta es un JSON válido
                     JSONObject jsonObject = new JSONObject(response);
                     String status = jsonObject.getString("status");
                     String message = jsonObject.getString("message");
 
+                    // Si el login fue exitoso
                     if (status.equals("success")) {
                         JSONObject userData = jsonObject.getJSONObject("user_data");
                         String nomina = userData.getString("nomina");
                         String nombre = userData.getString("nombre");
 
+                        // Establecer los datos del repartidor
                         repartidor.setNombre(nombre);
                         repartidor.setNomina(nomina);
 
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
+                        // Si hay un error, mostrar el mensaje
                         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -107,26 +112,21 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // Si ocurre un error en la conexión
                 Toast.makeText(MainActivity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
             }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("nomina", nomina);
-                params.put("clave", clave);
-                return params;
-            }
-        };
+        });
 
+        // Crear la cola de solicitudes y añadir la solicitud GET
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
 
 
+
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.0.254/citei/Pedidos.php?nomina=" + nomina;
+        String url = "http://192.168.1.79/Repartidor/Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
