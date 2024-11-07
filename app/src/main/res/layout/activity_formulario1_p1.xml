@@ -9,341 +9,426 @@
     tools:context=".Formulario1P1">
 
     <androidx.cardview.widget.CardView
-        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"
-        app:cardCornerRadius="20dp"
-        app:cardBackgroundColor="@color/azul">
+        android:layout_weight="7"
+        app:cardBackgroundColor="#1aa6b7"
+        android:layout_margin="20dp"
+        app:cardCornerRadius="20dp">
 
-        <LinearLayout
+        <!--Scroll-->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp">
-            <Spinner
-                android:id="@+id/PlacasVehiculo"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:gravity="center"
-                android:textSize="25dp"
-                android:hint="Placas del vehículo"/>
 
-            <!--Anticongelante-->
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="20dp"
+            <!--Contenedor principal-->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/white">
-                <LinearLayout
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--Placas-->
+                <Spinner
+                    android:id="@+id/PlacasVehiculo"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="100dp"
+                    android:background="@color/white"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    />
+
+                <!--Anticongelante-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:gravity="center"
                             android:textColor="@color/black"
                             android:text="Anticongelante"
-                            android:textSize="20dp"
-                            />
-                    </LinearLayout>
-                    <RadioGroup
-                        android:id="@+id/radioGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/AH"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="Alto"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"
-                                android:layout_gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/AL"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="\tBajo"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"/>
-                        </LinearLayout>
-                    </RadioGroup>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                            android:textSize="20sp" />
 
-            <!--Aceite de motor-->
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/white">
-                <LinearLayout
+                        <RadioGroup
+                            android:id="@+id/Anticongelante"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/AnticongelanteA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Alto"
+                                android:textSize="25sp"/>
+
+                            <RadioButton
+                                android:id="@+id/AnticongelanteB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Bajo"
+                                android:textSize="25sp"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Aceite de motor-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="100dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:gravity="center"
                             android:textColor="@color/black"
                             android:text="Aceite de motor"
-                            android:textSize="20dp"
-                            />
-                    </LinearLayout>
-                    <RadioGroup
-                        android:id="@+id/radioGroup2"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/MH"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="Alto"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"
-                                android:layout_gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/ML"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="\tBajo"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"/>
-                        </LinearLayout>
-                    </RadioGroup>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                            android:textSize="20sp" />
 
-            <!--Aceite de transmisión-->
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/white">
-                <LinearLayout
+                        <RadioGroup
+                            android:id="@+id/AceiteMotor"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/AceiteMotorA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Alto"
+                                android:textSize="25sp"/>
+
+                            <RadioButton
+                                android:id="@+id/AceiteMotorB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Bajo"
+                                android:textSize="25sp"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Aceite de Transmision-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:text="Aceite de transmisión"
-                            android:textSize="20dp"
-                            />
-                    </LinearLayout>
-                    <RadioGroup
-                        android:id="@+id/radioGroup3"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/TH"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="Alto"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"
-                                android:layout_gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/TL"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="\tBajo"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"/>
-                        </LinearLayout>
-                    </RadioGroup>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                            android:text="Acetite de Transmision"
+                            android:textSize="20sp" />
 
-            <!--Líquido de frenos-->
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/white">
-                <LinearLayout
+                        <RadioGroup
+                            android:id="@+id/AceiteTransmision"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/AceiteTransmisionA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Alto"
+                                android:textSize="25sp"/>
+
+                            <RadioButton
+                                android:id="@+id/AceiteTransmisionB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Bajo"
+                                android:textSize="25sp"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Liquido de frenos-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:text="Líquido de frenos"
-                            android:textSize="20dp"
-                            />
-                    </LinearLayout>
-                    <RadioGroup
-                        android:id="@+id/radioGroup4"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/FH"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="Alto"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"
-                                android:layout_gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/FB"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="\tBajo"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"/>
-                        </LinearLayout>
-                    </RadioGroup>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                            android:text="Liquido de frenos"
+                            android:textSize="20sp" />
 
-            <!--Líquido de dirección hidráulica-->
-            <androidx.cardview.widget.CardView
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/white">
-                <LinearLayout
+                        <RadioGroup
+                            android:id="@+id/Frenos"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/FrenosA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Alto"
+                                android:textSize="25sp"/>
+
+                            <RadioButton
+                                android:id="@+id/FrenosB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Bajo"
+                                android:textSize="25sp"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Liquido de direccion hidraulica-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    app:cardBackgroundColor="@color/white"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="50dp"
                             android:gravity="center"
                             android:textColor="@color/black"
-                            android:text="Líquido de dirección hidráulica"
-                            android:textSize="20dp"
+                            android:text="Liquido de direccion hidraulica"
+                            android:textSize="20sp" />
+
+                        <RadioGroup
+                            android:id="@+id/DHidraulica"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/DHidraulicaA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Alto"
+                                android:textSize="25sp"/>
+
+                            <RadioButton
+                                android:id="@+id/DHidraulicaB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Bajo"
+                                android:textSize="25sp"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kilometraje -->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Kilometraje"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25sp"
+                            />
+                        <ImageView
+                            android:clickable="true"
+                            android:id="@+id/K1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/cam"
                             />
                     </LinearLayout>
-                    <RadioGroup
-                        android:id="@+id/radioGroup5"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/DH"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="Alto"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"
-                                android:layout_gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <RadioButton
-                                android:id="@+id/DL"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="\tBajo"
-                                android:textColor="@color/black"
-                                android:textSize="30dp"/>
-                        </LinearLayout>
-                    </RadioGroup>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
+                <!-- Nivel de gasolina -->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Nivel de gasolina"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25sp"
+                            />
+                        <ImageView
+                            android:clickable="true"
+                            android:id="@+id/G1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/cam"
+                            />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--LLantas-->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:text="Nivel de llanta"
+                            android:textSize="20sp" />
+
+                        <RadioGroup
+                            android:id="@+id/llanta"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/llantaA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Buena"
+                                android:textSize="20sp"/>
+
+                            <RadioButton
+                                android:id="@+id/llantaR"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Regular"
+                                android:textSize="20sp"/>
+
+                            <RadioButton
+                                android:id="@+id/llantaB"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:text="Mala"
+                                android:textSize="20sp"/>
+
+                        </RadioGroup>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </androidx.cardview.widget.CardView>
 
@@ -351,10 +436,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Next"
+        android:text="Enviar"
         android:textColor="@color/black"
         android:layout_marginRight="120dp"
         android:layout_marginLeft="120dp"
+        android:layout_marginBottom="20dp"
         android:textSize="25dp"
         android:backgroundTint="@color/rojo"/>
 
