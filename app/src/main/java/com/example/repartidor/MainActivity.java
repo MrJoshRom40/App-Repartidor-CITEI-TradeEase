@@ -3,6 +3,8 @@ package com.example.repartidor;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,20 +47,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static Repartidor repartidor = new Repartidor();
 
-    public static String NOTIFICATION_CHANNEL_ID = "1001";
-    public static String default_notification_id = "default";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        requestPermission();
+        getDeviceToken();
+
         usuario = findViewById(R.id.usr);
         contra = findViewById(R.id.pass);
         logear = findViewById(R.id.login);
-
-        // Programar la notificación al iniciar la actividad
-        //scheduleNotification();
 
         logear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-
-
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://192.168.50.108/Repartidor/Pedidos.php?nomina=" + nomina;
@@ -164,14 +169,58 @@ public class MainActivity extends AppCompatActivity {
         return repartidor.getNombre();
     }
 
-    public static boolean isEditTextEmpty(EditText editText){
+    public static boolean isEditTextEmpty(@NonNull EditText editText){
         String txt = editText.getText().toString();
         if(txt.isEmpty())
             return true;
         return false;
     }
 
-    private void scheduleNotification(){
-        Intent intent = new Intent(this, AlarmReceiver.class);
+    public void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permiso concedido", Toast.LENGTH_SHORT).show();
+            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                showPermissionExplanationDialog();
+            } else{
+                resultLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+            }
+        } else{
+            getDeviceToken();
+        }
+    }
+
+    private ActivityResultLauncher<String> resultLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), isGranted ->{
+                if(isGranted){
+
+                }
+                else{
+
+                }
+            }
+    );
+
+    private void showPermissionExplanationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permiso Necesario")
+                .setMessage("Esta aplicación necesita el permiso de notificaciones para funcionar correctamente.")
+                .setPositiveButton("Conceder", (dialog, which) -> resultLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS))
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    public void getDeviceToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful()){
+                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                    return;
+                }
+                String token = task.getResult();
+                Log.d("", "Token: " + token);
+            }
+        });
     }
 }

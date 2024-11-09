@@ -31,24 +31,31 @@
 
         <activity
             android:name=".Carga_Descarga"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Descanso"
-            android:exported="false" />
-        <activity
-            android:name=".Reporte"
-            android:exported="false" />
-        <activity
-            android:name=".Problema"
-            android:exported="false" />
-        <activity
-            android:name=".Inicio"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Formulario1P1"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Descanso"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Reporte"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Problema"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Inicio"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

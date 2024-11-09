@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "95028706091",
-    "project_id": "repartidor-2bf6c",
-    "storage_bucket": "repartidor-2bf6c.firebasestorage.app"
+    "project_number": "550121582082",
+    "project_id": "repartidor-dceab",
+    "storage_bucket": "repartidor-dceab.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:95028706091:android:5ff494f8d1cdf9a30ce36e",
+        "mobilesdk_app_id": "1:550121582082:android:d6d67d46097ce01682811b",
         "android_client_info": {
           "package_name": "com.example.repartidor"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBHZMoi1jHl4nDlcvtSxb-CLMTdpaXRbHg"
+          "current_key": "AIzaSyBFviQ8OTeqxvAnWIZd3R37N4L3AGreLY0"
         }
       ],
       "services": {

@@ -49,19 +49,19 @@ public class Inicio extends AppCompatActivity {
         if(item.getItemId()==R.id.Problema){
             Intent c = new Intent(this, Problema.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
-            finish();
+
         }
 
         if(item.getItemId()==R.id.Reporte){
             Intent c = new Intent(this, Reporte.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
-            finish();
+
         }
 
         if(item.getItemId()==R.id.Descanso){
             Intent c = new Intent(this, Descanso.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
-            finish();
+
         }
 
         if(item.getItemId()==R.id.Salir){
