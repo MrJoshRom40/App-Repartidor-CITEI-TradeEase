@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Calendar;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -28,6 +32,63 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
+        Calendar calendar = Calendar.getInstance();
+        int hora = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuto = calendar.get(Calendar.MINUTE);
+        if(hora == 9 && minuto <= 30){
+            inicio_de_la_jornada();
+        } else{
+            finalizacion_de_la_jornada();
+        }
+    }
+
+    // Método para crear el canal de notificación
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notificaciones de CITEI";
+            String description = "Canal para notificaciones de CITEI";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    // Función para iniciar el formulario de inicio de jornada
+    private void inicio_de_la_jornada() {
+        try {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.citei)
+                    .setContentTitle("CITEI TradeEase")
+                    .setContentText("Hola mi chambeador, hora de iniciar! 😎")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOngoing(false);
+
+            // Verificar permisos y mostrar la notificación
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(1, builder.build());
+            } else {
+                Log.w("MyFirebaseMessagingService", "No se otorgaron permisos para las notificaciones.");
+                // Aquí puedes manejar la solicitud de permisos si es necesario
+            }
+            // Usamos Handler para iniciar la actividad en el hilo principal
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Intent intent = new Intent(this, Formulario1P1.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  // Importante para iniciar actividad desde servicio
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
+        }
+    }
+
+    //Funcion para la notificacion de jornada
+    private void finalizacion_de_la_jornada(){
         try {
             // Crear los intents para las acciones
             Intent regresar = new Intent(this, Regresar.class);
@@ -58,22 +119,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         } catch (Exception e) {
             Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
-        }
-    }
-
-    // Método para crear el canal de notificación
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notificaciones de CITEI";
-            String description = "Canal para notificaciones de CITEI";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
         }
     }
 }
