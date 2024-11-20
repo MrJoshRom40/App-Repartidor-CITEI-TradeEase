@@ -34,7 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onCreate();
         createNotificationChannel();
     }
-
+//smn
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         Calendar calendar = Calendar.getInstance();

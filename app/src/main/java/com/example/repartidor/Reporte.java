@@ -122,6 +122,7 @@ public class Reporte extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(Reporte.this, "Error de conexión", Toast.LENGTH_SHORT).show();
                     }
+                    //smn
                 });
 
         // Agregar la solicitud a la cola

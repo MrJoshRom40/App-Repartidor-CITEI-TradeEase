@@ -61,7 +61,7 @@ public class Inicio extends AppCompatActivity {
         //los parametros son en donde se encuentra y el nombre del xml
         return super.onCreateOptionsMenu(menu);//metodo que retorna si es que se llamo al menu y manda a llamar a la funcion de abajo
     }
-
+//smn
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         if(item.getItemId()==R.id.Problema){
             Intent c = new Intent(this, Problema.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
