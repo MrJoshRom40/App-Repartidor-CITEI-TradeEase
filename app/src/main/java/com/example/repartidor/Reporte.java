@@ -14,6 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import Pojo.Conexion;
+
 public class Reporte extends AppCompatActivity {
 
     EditText numv, cant, coment;
@@ -73,6 +85,49 @@ public class Reporte extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);//metodo que retorna si es que se llamo al menu y manda a llamar a la funcion de abajo
     }
 
+    private void checkDescanso(){
+        Conexion conexion = new Conexion();
+        String url = conexion.getURL_BASE() + "descanso.php?Nomina=" + MainActivity.sendNomina(); // Cambia esta URL según corresponda
+
+        // Crear una instancia de RequestQueue
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Crear una solicitud de tipo StringRequest
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            // Parsear la respuesta JSON
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean descanso = jsonObject.getBoolean("descanso");
+
+                            // Verificar si descanso es true o false
+                            if (descanso) {
+                                // Descanso es distinto de 1, iniciar actividad
+                                Intent c = new Intent(Reporte.this, Descanso.class);
+                                startActivity(c);
+                            } else {
+                                // Descanso es igual a 1, mostrar mensaje
+                                Toast.makeText(Reporte.this, "Ya se ha usado el descanso", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(Reporte.this, "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Reporte.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Agregar la solicitud a la cola
+        queue.add(stringRequest);
+    }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         if(item.getItemId()==R.id.Problema){
             Intent c = new Intent(this, Problema.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
@@ -85,9 +140,7 @@ public class Reporte extends AppCompatActivity {
         }
 
         if(item.getItemId()==R.id.Descanso){
-            Intent c = new Intent(this, Descanso.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
-            startActivity(c);
-            finish();
+            checkDescanso();
         }
 
         if(item.getItemId()==R.id.Salir){

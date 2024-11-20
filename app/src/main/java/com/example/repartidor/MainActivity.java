@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Bienvenido " + repartidor.getNombre(), Toast.LENGTH_SHORT).show();
 
                         // Cargar los pedidos solo después de haber logueado exitosamente
-                        cargar(repartidor.getNomina());
+
 
                         // Iniciar la nueva actividad
                         Intent intent = new Intent(MainActivity.this, Inicio.class);
@@ -134,41 +134,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void cargar(String nomina) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = conexion.getURL_BASE() + "Pedidos.php?nomina=" + nomina;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Response", response);
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    PedidosAsignados.Pedidos.clear();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        Pedido pedido = new Pedido();
-                        pedido.setNombrecliente(obj.getString("NombreCompleto"));
-                        pedido.setDireccion(obj.getString("DireccionCompleta"));
-                        pedido.setTelefono(obj.getString("Telefono"));
-                        pedido.setNumeroDeVenta(obj.getString("NumeroVenta"));
-                        pedido.setEstadoDelpedido(obj.getString("EstadoPedido"));
-                        PedidosAsignados.Pedidos.add(pedido);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        queue.add(stringRequest);
-    }
 
     public static String sendName(){
         return repartidor.getNombre();

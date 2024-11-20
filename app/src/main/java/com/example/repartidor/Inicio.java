@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,11 +21,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import Global.PedidosAsignados;
 import Pojo.Conexion;
+import Pojo.Pedido;
 
 public class Inicio extends AppCompatActivity {
 
@@ -37,6 +40,7 @@ public class Inicio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
+        cargar(MainActivity.sendNomina());
 
         rv = findViewById(R.id.rvpedidos);
 
@@ -62,27 +66,65 @@ public class Inicio extends AppCompatActivity {
         if(item.getItemId()==R.id.Problema){
             Intent c = new Intent(this, Problema.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
-
+            PedidosAsignados.Pedidos.clear();
         }
 
         if(item.getItemId()==R.id.Reporte){
             Intent c = new Intent(this, Reporte.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
-
+            PedidosAsignados.Pedidos.clear();
         }
 
         if(item.getItemId()==R.id.Descanso){
             checkDescanso();
+            PedidosAsignados.Pedidos.clear();
         }
 
         if(item.getItemId()==R.id.Salir){
             Toast.makeText(this, "Adios " + MainActivity.sendName(), Toast.LENGTH_SHORT).show();
             Intent c = new Intent(this, MainActivity.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
+            PedidosAsignados.Pedidos.clear();
             finish();
         }
 
         return super.onOptionsItemSelected(item);//metodo que retorna la opcion que se selecciono
+    }
+
+    private void cargar(String nomina) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = conexion.getURL_BASE() + "Pedidos.php?nomina=" + nomina;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Response", response);
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    PedidosAsignados.Pedidos.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        Pedido pedido = new Pedido();
+                        pedido.setNombrecliente(obj.getString("NombreCompleto"));
+                        pedido.setDireccion(obj.getString("DireccionCompleta"));
+                        pedido.setTelefono(obj.getString("Telefono"));
+                        pedido.setNumeroDeVenta(obj.getString("NumeroVenta"));
+                        pedido.setEstadoDelpedido(obj.getString("EstadoPedido"));
+                        PedidosAsignados.Pedidos.add(pedido);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(Inicio.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 
     private void checkDescanso(){
