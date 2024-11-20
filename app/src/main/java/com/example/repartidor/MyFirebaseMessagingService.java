@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -20,9 +21,13 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Calendar;
 
+import Global.PedidosAsignados;
+import Pojo.Pedido;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String CHANNEL_ID = "your_channel_id";
+    private static boolean flag = false;
 
     @Override
     public void onCreate() {
@@ -38,7 +43,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(hora == 9 && minuto <= 30){
             inicio_de_la_jornada();
         } else{
-            finalizacion_de_la_jornada();
+            for (Pedido p : PedidosAsignados.Pedidos) {
+                if(p.getEstadoDelpedido().equals("Foraneo")){//Si detecta que el repartidor tiene pedidos foraneos
+                    flag = true;
+                }
+            }
+            if(flag){//Si detecta que el repartidor tiene pedidos foraneos
+                Toast.makeText(this, "Por ser un repartidor con pedido/s foráneos\nno recibirás una notificacion de regreso, suerte 😊", Toast.LENGTH_SHORT).show();
+            } else{
+                finalizacion_de_la_jornada();
+            }
         }
     }
 

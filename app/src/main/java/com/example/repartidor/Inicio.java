@@ -13,12 +13,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import Global.PedidosAsignados;
+import Pojo.Conexion;
 
 public class Inicio extends AppCompatActivity {
 
     RecyclerView rv;
     Toolbar toolbar;
+
+    private Conexion conexion = new Conexion();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +72,7 @@ public class Inicio extends AppCompatActivity {
         }
 
         if(item.getItemId()==R.id.Descanso){
-            Intent c = new Intent(this, Descanso.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
-            startActivity(c);
-
+            checkDescanso();
         }
 
         if(item.getItemId()==R.id.Salir){
@@ -73,6 +84,50 @@ public class Inicio extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);//metodo que retorna la opcion que se selecciono
     }
+
+    private void checkDescanso(){
+        String url = conexion.getURL_BASE() + "descanso.php?Nomina=" + MainActivity.sendNomina(); // Cambia esta URL según corresponda
+
+        // Crear una instancia de RequestQueue
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Crear una solicitud de tipo StringRequest
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            // Parsear la respuesta JSON
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean descanso = jsonObject.getBoolean("descanso");
+
+                            // Verificar si descanso es true o false
+                            if (descanso) {
+                                // Descanso es distinto de 1, iniciar actividad
+                                Intent c = new Intent(Inicio.this, Descanso.class);
+                                startActivity(c);
+                            } else {
+                                // Descanso es igual a 1, mostrar mensaje
+                                Toast.makeText(Inicio.this, "Ya se ha usado el descanso", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(Inicio.this, "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Inicio.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Agregar la solicitud a la cola
+        queue.add(stringRequest);
+    }
+
+
 
 
 }

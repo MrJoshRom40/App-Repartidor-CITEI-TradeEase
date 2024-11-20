@@ -22,7 +22,7 @@ public class Descanso extends AppCompatActivity {
     private TextView temp;
     private Button endt;
     private CountDownTimer countDownTimer;
-    private long tempoenmilis = 10000;//60 * 60 * 1000;
+    private long tempoenmilis = 1 * 60 * 175;
     private Vibrator vibrator;
     private MediaPlayer mediaPlayer;
 
@@ -70,15 +70,6 @@ public class Descanso extends AppCompatActivity {
             @Override
             public void onFinish() {
                 temp.setText("00:00");
-                if (vibrator != null && vibrator.hasVibrator()) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                }
-                // Reproducir sonido
-                if (mediaPlayer != null) {
-                    mediaPlayer.start();
-                }
-
-
             }
         }.start();
     }

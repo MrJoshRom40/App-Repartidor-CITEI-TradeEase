@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".Formulario2">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        app:cardBackgroundColor="#1aa6b7"
+        android:layout_margin="20dp"
+        app:cardCornerRadius="20dp">
+
+        <!--Scroll-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+
+            <!--Contenedor principal-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <EditText
+                        android:id="@+id/SonidosNuevos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:hint="Sonidos nuevos"
+                        android:gravity="center"
+                        android:maxLength="100"
+                        android:textSize="20sp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <EditText
+                        android:id="@+id/GolpesNuevos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:hint="Golpes nuevos"
+                        android:gravity="center"
+                        android:maxLength="100"
+                        android:textSize="20sp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <EditText
+                        android:id="@+id/Interiores"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:hint="Estado de los interiores"
+                        android:gravity="center"
+                        android:maxLength="100"
+                        android:textSize="20sp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Kilometraje -->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Kilometraje"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25sp"
+                            />
+                        <ImageView
+                            android:clickable="true"
+                            android:id="@+id/K2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/cam"
+                            />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Nivel de gasolina -->
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Nivel de gasolina"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="25sp"
+                            />
+                        <ImageView
+                            android:clickable="true"
+                            android:id="@+id/G2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/cam"
+                            />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <EditText
+                        android:id="@+id/Comentarios"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:hint="Comentarios (opcional)"
+                        android:gravity="center"
+                        android:maxLength="100"
+                        android:textSize="20sp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/btnEnviarF2"
+        android:text="Enviar"
+        android:textColor="@color/black"
+        android:layout_marginRight="120dp"
+        android:layout_marginLeft="120dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="25dp"
+        android:backgroundTint="@color/rojo"/>
+
+
+</LinearLayout>

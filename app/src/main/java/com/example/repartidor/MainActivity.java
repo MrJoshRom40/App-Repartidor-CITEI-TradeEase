@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Global.PedidosAsignados;
+import Pojo.Conexion;
 import Pojo.Pedido;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static Repartidor repartidor = new Repartidor();
+
+    private Conexion conexion = new Conexion();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void login(String nomina, String clave) {
         // Crear la URL con los parámetros 'nomina' y 'clave'
-        String url = "http://192.168.50.108/Repartidor/login.php?nomina=" + nomina + "&clave=" + clave;
+        String url = conexion.getURL_BASE() + "login.php?nomina=" + nomina + "&clave=" + clave;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -131,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.50.108/Repartidor/Pedidos.php?nomina=" + nomina;
+        String url = conexion.getURL_BASE() + "Pedidos.php?nomina=" + nomina;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -169,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
         return repartidor.getNombre();
     }
 
+    public static String sendNomina(){
+        return repartidor.getNomina();
+    }
+
     public static boolean isEditTextEmpty(@NonNull EditText editText){
         String txt = editText.getText().toString();
         if(txt.isEmpty())
@@ -177,6 +186,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permiso concedido", Toast.LENGTH_SHORT).show();
