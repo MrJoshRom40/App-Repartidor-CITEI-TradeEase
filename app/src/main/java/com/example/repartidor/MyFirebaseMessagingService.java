@@ -27,7 +27,6 @@ import Pojo.Pedido;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String CHANNEL_ID = "your_channel_id";
-    private static boolean flag = false;
 
     @Override
     public void onCreate() {
@@ -37,11 +36,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //smn
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        Calendar calendar = Calendar.getInstance();
+        /*Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY); // Formato 24 horas
-        int minutos = calendar.get(Calendar.MINUTE);
+        int minutos = calendar.get(Calendar.MINUTE);*/
 
-        if (hora == 17 && minutos <= 30) {
+        //if (hora == 9 && minutos <= 30) {
             try {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.citei)
@@ -67,12 +66,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (Exception e) {
                 Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
             }
-        } else{
-            for(Pedido pedido : Pedidos){
-                if(pedido.getEstadoDelpedido().equals("Foraneo")){
-                    return;
+        //} else{
+            /*if(Pedidos.isEmpty()){
+                return;
+            } else{
+                for(Pedido pedido : Pedidos){
+                    if(pedido.getEstadoDelpedido().equals("Foraneo")){
+                        return;
+                    }
                 }
             }
+
             try {
                 // Crear los intents para las acciones
                 Intent regresar = new Intent(this, Regresar.class);
@@ -104,7 +108,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (Exception e) {
                 Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
             }
-        }
+        //}*/
     }
 
     // Método para crear el canal de notificación
