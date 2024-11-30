@@ -40,7 +40,7 @@ public class Inicio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
-        cargar(MainActivity.sendNomina());
+
 
         rv = findViewById(R.id.rvpedidos);
 
@@ -91,41 +91,7 @@ public class Inicio extends AppCompatActivity {
         return super.onOptionsItemSelected(item);//metodo que retorna la opcion que se selecciono
     }
 
-    private void cargar(String nomina) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = conexion.getURL_BASE() + "Pedidos.php?nomina=" + nomina;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Response", response);
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    PedidosAsignados.Pedidos.clear();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        Pedido pedido = new Pedido();
-                        pedido.setNombrecliente(obj.getString("NombreCompleto"));
-                        pedido.setDireccion(obj.getString("DireccionCompleta"));
-                        pedido.setTelefono(obj.getString("Telefono"));
-                        pedido.setNumeroDeVenta(obj.getString("NumeroVenta"));
-                        pedido.setEstadoDelpedido(obj.getString("EstadoPedido"));
-                        PedidosAsignados.Pedidos.add(pedido);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(Inicio.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        queue.add(stringRequest);
-    }
 
     private void checkDescanso(){
         String url = conexion.getURL_BASE() + "descanso.php?Nomina=" + MainActivity.sendNomina(); // Cambia esta URL según corresponda
@@ -148,6 +114,7 @@ public class Inicio extends AppCompatActivity {
                                 // Descanso es distinto de 1, iniciar actividad
                                 Intent c = new Intent(Inicio.this, Descanso.class);
                                 startActivity(c);
+                                finish();
                             } else {
                                 // Descanso es igual a 1, mostrar mensaje
                                 Toast.makeText(Inicio.this, "Ya se ha usado el descanso", Toast.LENGTH_SHORT).show();

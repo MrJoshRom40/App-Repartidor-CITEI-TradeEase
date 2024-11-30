@@ -1,17 +1,15 @@
 package com.example.repartidor;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,11 +19,13 @@ public class Carga_Descarga extends AppCompatActivity {
 
     private TextView tempo;
     private Button add10;
-    private Button end;
-    private CountDownTimer countDownTimer;
-    private long tempoenmilis = 20 * 60 * 1000;
-    private int uses = 0;
+    private long tempoenmilis = 20 * 1000; // Timer inicial de 20 segundos
+    private final long SECOND_TIMER = 10 * 1000; // Cada temporizador adicional de 10 segundos
+    private int addedUses = 0; // Contador de usos del botón
+    private static final int MAX_ADDED_USES = 2; // Máximo de tiempos adicionales permitidos
     private static final String CHANNEL_ID = "tiempo_terminado_canal";
+
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,70 +34,99 @@ public class Carga_Descarga extends AppCompatActivity {
 
         tempo = findViewById(R.id.temporizador);
         add10 = findViewById(R.id.Add10min);
-        end = findViewById(R.id.Terminar_temporizador);
 
         // Crear el canal de notificación
         crearCanalNotificacion();
 
-        startTimmer();
+        // Iniciar el temporizador inicial de 20 segundos
+        startTimer();
 
+        // Configurar el botón para añadir tiempo
         add10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (uses < 2) {
-                    tempoenmilis += 10 * 60 * 1000;
-                    uses++;
-                    restartTimmer();  // Reiniciar el temporizador con el nuevo tiempo
+                if (addedUses < MAX_ADDED_USES) {
+                    tempoenmilis += SECOND_TIMER; // Añadir 10 segundos al temporizador
+                    addedUses++;
+                    restartTimer(); // Reiniciar el temporizador
+                    if(addedUses == 2){
+                        add10.setVisibility(View.GONE);
+                    }
                 } else {
-                    Toast.makeText(Carga_Descarga.this, "Ya estás en el límite de uso", Toast.LENGTH_SHORT).show();
+                    add10.setEnabled(false); // Deshabilitar el botón
                 }
-            }
-        });
-
-        end.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopTimmer();
-                Intent intent = new Intent(Carga_Descarga.this, Inicio.class);
-                startActivity(intent);
-                finish();
-                Toast.makeText(Carga_Descarga.this, "Continuemos con los pedidos", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void startTimmer() {
+    private void startTimer() {
+
         countDownTimer = new CountDownTimer(tempoenmilis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if(addedUses == 2){
+                    add10.setVisibility(View.GONE);
+                }
                 tempoenmilis = millisUntilFinished;
-                updateTimmerText(false);
+                updateTimerText();
             }
 
             @Override
             public void onFinish() {
                 tempo.setText("00:00");
-                enviarNotificacionTiempoTerminado();  // Enviar notificación cuando el tiempo termine
+                enviarNotificacionTiempoTerminado();
+                if (addedUses < MAX_ADDED_USES) {
+                    startSecondTimer(); // Iniciar un nuevo temporizador automáticamente si corresponde
+                    addedUses++;
+                } else {
+                    redirectToAnotherActivity(); // Redirigir al finalizar
+                }
             }
         }.start();
     }
 
-    private void stopTimmer() {
+    private void startSecondTimer() {
+        tempoenmilis = SECOND_TIMER; // Establecer el nuevo tiempo de 10 segundos
+        countDownTimer = new CountDownTimer(tempoenmilis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(addedUses == 2){
+                    add10.setVisibility(View.GONE);
+                }
+                tempoenmilis = millisUntilFinished;
+                updateTimerText();
+            }
+
+            @Override
+            public void onFinish() {
+                tempo.setText("00:00");
+                enviarNotificacionTiempoTerminado();
+                if (addedUses < MAX_ADDED_USES) {
+                    startSecondTimer(); // Iniciar un nuevo temporizador automáticamente si corresponde
+                    addedUses++;
+                } else {
+                    redirectToAnotherActivity(); // Redirigir al finalizar
+                }
+            }
+        }.start();
+    }
+
+    private void restartTimer() {
         if (countDownTimer != null) {
-            countDownTimer.cancel();
+            countDownTimer.cancel(); // Detener el temporizador actual
         }
+        startTimer(); // Reiniciar el temporizador
     }
 
-    private void restartTimmer() {
-        stopTimmer();  // Detener el temporizador actual
-        startTimmer(); // Iniciar un nuevo temporizador con el nuevo tiempo
+    private void redirectToAnotherActivity() {
+        Intent intent = new Intent(Carga_Descarga.this, Inicio.class);
+        startActivity(intent);
+        finish(); // Cerrar esta actividad
     }
 
-    private void updateTimmerText(boolean add) {
-        int minutes = (int) (tempoenmilis / 1000) / 60;
-        int seconds = (int) (tempoenmilis / 1000) % 60;
-
-        String formato = String.format("%02d:%02d", minutes, seconds);
+    private void updateTimerText() {
+        int seconds = (int) (tempoenmilis / 1000);
+        String formato = String.format("00:%02d", seconds);
         tempo.setText(formato);
     }
 
@@ -110,15 +139,10 @@ public class Carga_Descarga extends AppCompatActivity {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
         }
         notificationManager.notify(1, builder.build());
     }
@@ -133,6 +157,14 @@ public class Carga_Descarga extends AppCompatActivity {
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel(); // Detener el temporizador para evitar fugas de memoria
         }
     }
 }

@@ -3,8 +3,13 @@ package com.example.repartidor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,6 +37,12 @@ public class Reporte extends AppCompatActivity {
     EditText numv, cant, coment;
     Button sendreporte;
     Toolbar toolbar;
+    RadioGroup cantidad;
+    String cantidadDe;
+
+    String ubicacion;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +53,9 @@ public class Reporte extends AppCompatActivity {
         cant = findViewById(R.id.cantidad_reporte);
         coment = findViewById(R.id.comentarios_reporte);
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        cantidad = findViewById(R.id.RGCantidad);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -49,15 +64,52 @@ public class Reporte extends AppCompatActivity {
         sendreporte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(Reporte.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // Solicitar permisos si no están concedidos
+                    ActivityCompat.requestPermissions(Reporte.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    return;
+                }
+                // Solicitar actualizaciones de la ubicación
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 if(MainActivity.isEditTextEmpty(numv) || MainActivity.isEditTextEmpty(cant)){
                     Toast.makeText(Reporte.this, "Hay que llenar todos los campos requeridos", Toast.LENGTH_SHORT).show();
                 } else{
                     String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
-                            ", te informo que en el pedido: " + numv.getText().toString() + "\nSe mandaron " + cant.getText().toString() +
+                            ", te informo que en el pedido: " + numv.getText().toString() + "\nSe mandaron " + cant.getText().toString() + cantidadDe +
                             "\n\n" + coment.getText().toString();
                     sendMensaje(mensaje);
                 }
 
+            }
+        });
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                // Cuando cambie la ubicación, se obtiene la latitud y longitud
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                ubicacion += "Me encuentro en: " + longitude + ", " + latitude;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {}
+        };
+
+
+
+        cantidad.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.AnticongelanteA){
+                    cantidadDe = "de más";
+                } else if(checkedId == R.id.AnticongelanteB){
+                    cantidadDe = "de menos";
+                }
             }
         });
     }

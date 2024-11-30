@@ -2,6 +2,7 @@ package com.example.repartidor;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,18 +10,32 @@ import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import Global.PedidosAsignados;
 import Pojo.Pedido;
@@ -30,6 +45,8 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
     public Context context;
     private static final String CHANNEL_ID = "canal_ejemplo";  // ID del canal de notificación
     private static final int NOTIFICATION_ID = 1;  // ID de la notificación
+
+
 
     @NonNull
     @Override
@@ -53,6 +70,7 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
             @Override
             public void onClick(View v) {
                 String direccionPedido = pedidoViewHolder.direccion.getText().toString();
+                obtenerCoordenadas(direccionPedido);
                 navigateToLocation(direccionPedido);
                 showNotification();
             }
@@ -73,6 +91,25 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
             }
         }
 
+    }
+
+    private void obtenerCoordenadas(String direccion) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            // Obtener una lista de direcciones (puede haber más de una coincidencia)
+            List<Address> direcciones = geocoder.getFromLocationName(direccion, 1);
+
+            if (direcciones != null && !direcciones.isEmpty()) {
+                Address direccionObtenida = direcciones.get(0);
+
+
+            } else {
+                System.out.println("No se encontraron coordenadas para la dirección.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al obtener las coordenadas: " + e.getMessage());
+        }
     }
 
     @Override

@@ -12,7 +12,7 @@ public class Regresar extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String msg = "Hola administrador!\nSoy " + MainActivity.sendName() + "Te informo que voy de regreso a la empresa 👍";
-        sendMensaje(context, "Mensaje de prueba");
+        sendMensaje(context, msg);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(1); // Cancela la notificación con ID 1
     }
@@ -22,7 +22,6 @@ public class Regresar extends BroadcastReceiver {
         String phoneNumber = "+523314595049";  // Número de teléfono con código de país
         intent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + Uri.encode(mensaje)));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Agrega esta línea para resolver el error
-
         try {
             context.startActivity(intent);  // Usa context.startActivity() con la bandera añadida
         } catch (Exception e) {

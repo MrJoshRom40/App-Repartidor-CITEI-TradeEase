@@ -70,6 +70,9 @@ public class Descanso extends AppCompatActivity {
             @Override
             public void onFinish() {
                 temp.setText("00:00");
+                Intent intent = new Intent(Descanso.this, Splash.class);
+                startActivity(intent);
+                finish();
             }
         }.start();
     }
@@ -78,7 +81,7 @@ public class Descanso extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
             Toast.makeText(this, "Vamos a continuar!", Toast.LENGTH_SHORT).show();
-            Intent c = new Intent(this, Inicio.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
+            Intent c = new Intent(this, Splash.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
             startActivity(c);
             finish();
         }

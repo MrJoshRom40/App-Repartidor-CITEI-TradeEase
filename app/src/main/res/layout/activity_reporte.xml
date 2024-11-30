@@ -41,6 +41,42 @@
         android:hint="+/-  Cantidad"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:orientation="vertical">
+
+
+        <RadioGroup
+            android:id="@+id/RGCantidad"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/DeMas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:text="De más"
+                android:textSize="25sp"/>
+
+            <RadioButton
+                android:id="@+id/DeMenos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:text="De menos"
+                android:textSize="25sp"/>
+        </RadioGroup>
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/comentarios_reporte"
         android:layout_width="match_parent"

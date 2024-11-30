@@ -37,10 +37,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         /*Calendar calendar = Calendar.getInstance();
-        int hora = calendar.get(Calendar.HOUR_OF_DAY); // Formato 24 horas
-        int minutos = calendar.get(Calendar.MINUTE);*/
+        int hora = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutos = calendar.get(Calendar.MINUTE);
 
-        //if (hora == 9 && minutos <= 30) {
+        if (hora == 9 && minutos <= 30) {
             try {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.drawable.citei)
@@ -66,8 +66,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (Exception e) {
                 Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
             }
-        //} else{
-            /*if(Pedidos.isEmpty()){
+        } else{
+            if(Pedidos.isEmpty() ){
                 return;
             } else{
                 for(Pedido pedido : Pedidos){
@@ -75,40 +75,43 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         return;
                     }
                 }
+
             }
 
-            try {
-                // Crear los intents para las acciones
-                Intent regresar = new Intent(this, Regresar.class);
-                PendingIntent action1PendingIntent = PendingIntent.getBroadcast(
-                        this, 0, regresar, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-                Intent continuar = new Intent(this, Continuar.class);
-                PendingIntent action2PendingIntent = PendingIntent.getBroadcast(
-                        this, 0, continuar, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }*/
 
-                // Construir la notificación
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.citei)
-                        .setContentTitle("CITEI TradeEase")
-                        .setContentText("Hola mi chambeador, ya son las 6:30 pm 😎")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOngoing(true)
-                        .addAction(0, "Regresar", action1PendingIntent)
-                        .addAction(0, "Continuar", action2PendingIntent);
+        try {
+            // Crear los intents para las acciones
+            Intent regresar = new Intent(this, Regresar.class);
+            PendingIntent action1PendingIntent = PendingIntent.getBroadcast(
+                    this, 0, regresar, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-                // Verificar permisos y mostrar la notificación
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    notificationManager.notify(1, builder.build());
-                } else {
-                    Log.w("MyFirebaseMessagingService", "No se otorgaron permisos para las notificaciones.");
-                    // Aquí puedes manejar la solicitud de permisos si es necesario
-                }
-            } catch (Exception e) {
-                Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
+            Intent continuar = new Intent(this, Continuar.class);
+            PendingIntent action2PendingIntent = PendingIntent.getBroadcast(
+                    this, 0, continuar, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            // Construir la notificación
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.citei)
+                    .setContentTitle("CITEI TradeEase")
+                    .setContentText("Hola mi chambeador, ya son las 6:30 pm 😎")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOngoing(true)
+                    .addAction(0, "Regresar", action1PendingIntent)
+                    .addAction(0, "Continuar", action2PendingIntent);
+
+            // Verificar permisos y mostrar la notificación
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(1, builder.build());
+            } else {
+                Log.w("MyFirebaseMessagingService", "No se otorgaron permisos para las notificaciones.");
+                // Aquí puedes manejar la solicitud de permisos si es necesario
             }
-        //}*/
+        } catch (Exception e) {
+            Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
+        }
     }
 
     // Método para crear el canal de notificación
