@@ -325,7 +325,7 @@ public class Formulario1P1 extends AppCompatActivity {
     private void enviarDatos() {
         String url = conexion.getURL_BASE() + "formulario1.php?placas=" + respuesta.getPlaca() + "&antic=" + respuesta.getAnticongelante() + "&acem=" + respuesta.getAceiteMotor() +
                 "&acet=" + respuesta.getAceiteTransmision() + "&frenos=" + respuesta.getFrenos() + "&direccion=" + respuesta.getDireccionHidraulica() + "&kilo=" + respuesta.getKilometraje() + "&gas=" + respuesta.getNivelGasolina() +
-                "&fecha=" + formattedDate + "&duracion=" + 15 + "&repartidor=" + 1234 + "&llantas=" + respuesta.getNivelLlantas();
+                "&fecha=" + formattedDate + "&duracion=" + 15 + "&repartidor=" + MainActivity.sendNomina() + "&llantas=" + respuesta.getNivelLlantas();
 
         // Crear la solicitud GET con la URL completa
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

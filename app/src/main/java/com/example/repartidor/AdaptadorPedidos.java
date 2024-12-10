@@ -45,7 +45,7 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
     public Context context;
     private static final String CHANNEL_ID = "canal_ejemplo";  // ID del canal de notificación
     private static final int NOTIFICATION_ID = 1;  // ID de la notificación
-
+    private UbcationLocater ubcationLocater;
 
 
     @NonNull
@@ -65,12 +65,16 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
         pedidoViewHolder.direccion.setText(PedidosAsignados.Pedidos.get(i).getDireccion());
         pedidoViewHolder.telefono.setText(PedidosAsignados.Pedidos.get(i).getTelefono());
         pedidoViewHolder.numventa.setText(PedidosAsignados.Pedidos.get(i).getNumeroDeVenta());
+        String latitud = PedidosAsignados.Pedidos.get(i).getLatitudPedido();
+        String longitud = PedidosAsignados.Pedidos.get(i).getLongitudPedido();
+
 
         pedidoViewHolder.direccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String direccionPedido = pedidoViewHolder.direccion.getText().toString();
-                obtenerCoordenadas(direccionPedido);
+                ubcationLocater = new UbcationLocater(longitud,latitud, context, Carga_Descarga.class, pedidoViewHolder.numventa.getText().toString());
+                ubcationLocater.startTracking();
                 navigateToLocation(direccionPedido);
                 showNotification();
             }
@@ -170,4 +174,5 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
             notificationManager.createNotificationChannel(channel);
         }
     }
+
 }

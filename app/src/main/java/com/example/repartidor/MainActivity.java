@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText usuario, contra;
     private Button logear;
-
+    String formulario = "";
 
     public static Repartidor repartidor = new Repartidor();
 
@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//smn
+        Intent i = getIntent();
+        formulario = i.getStringExtra("Fomulario");
+
         requestPermission();
         getDeviceToken();
 
@@ -107,10 +109,19 @@ public class MainActivity extends AppCompatActivity {
                         // Cargar los pedidos solo después de haber logueado exitosamente
                         cargar(nomina);
 
-                        // Iniciar la nueva actividad
-                        Intent intent = new Intent(MainActivity.this, Splash.class);
-                        startActivity(intent);
-                        finish();
+                        if ("Formulario1P1".equals(formulario)) {
+                            Intent intent = new Intent(MainActivity.this, Formulario1P1.class);
+                            startActivity(intent);
+                            finish();
+                        } else if ("Formulario2".equals(formulario)) {
+                            Intent intent = new Intent(MainActivity.this, Formulario2.class);
+                            startActivity(intent);
+                            finish();
+                        } else if (formulario == null || formulario.isEmpty()) {
+                            Intent intent = new Intent(MainActivity.this, Splash.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     } else {
                         // Si hay un error, mostrar el mensaje
                         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -153,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
                         pedido.setTelefono(obj.getString("Telefono"));
                         pedido.setNumeroDeVenta(obj.getString("NumeroVenta"));
                         pedido.setEstadoDelpedido(obj.getString("EstadoPedido"));
+                        pedido.setLongitudPedido(obj.getString("LongitudPedido"));
+                        pedido.setLatitudPedido(obj.getString("LatitudPedido"));
                         PedidosAsignados.Pedidos.add(pedido);
                     }
                 } catch (JSONException e) {

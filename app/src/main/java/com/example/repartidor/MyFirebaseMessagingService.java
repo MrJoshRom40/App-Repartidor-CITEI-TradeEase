@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //smn
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        /*Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY);
         int minutos = calendar.get(Calendar.MINUTE);
 
@@ -59,7 +59,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 // Usamos Handler para iniciar la actividad en el hilo principal
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    Intent intent = new Intent(this, Formulario1P1.class);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("Fomulario", "Formulario1P1");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  // Importante para iniciar actividad desde servicio
                     startActivity(intent);
                 });
@@ -75,13 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         return;
                     }
                 }
-
-            }
-
-
-        }*/
-
-        try {
+                try {
             // Crear los intents para las acciones
             Intent regresar = new Intent(this, Regresar.class);
             PendingIntent action1PendingIntent = PendingIntent.getBroadcast(
@@ -111,6 +106,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         } catch (Exception e) {
             Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
+        }
+            }
+
+
         }
     }
 

@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,30 +38,90 @@ public class Problema extends AppCompatActivity {
     Button sendproblema;
     Toolbar toolbar;
 
+    String ubicacion; // Variable para almacenar la ubicación
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problema);
-
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         problematxt = findViewById(R.id.Txt_problema);
         sendproblema = findViewById(R.id.Send_problema);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        sendproblema.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(MainActivity.isEditTextEmpty(problematxt)){
-                    Toast.makeText(Problema.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
-                } else{
-                    String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
-                            ", te informo que he tenido un problema:\n" + problematxt.getText().toString();
-                    sendMensaje(mensaje);
-                }
+        ubicacion = "Ubicación no disponible";
+
+        sendproblema.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(Problema.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Solicitar permisos si no están concedidos
+                ActivityCompat.requestPermissions(Problema.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                return;
+            }
+            if(MainActivity.isEditTextEmpty(problematxt)){
+                Toast.makeText(Problema.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
+            } else{
+                String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
+                        ", te informo que he tenido un problema:\n" + problematxt.getText().toString();
+                sendMensaje(mensaje);
             }
         });
 
+        // Configurar el LocationListener
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                ubicacion = "https://www.google.com/maps?q=" + latitude + "," + longitude;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            @Override
+            public void onProviderEnabled(String provider) {}
+
+            @Override
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Solicitar actualizaciones de ubicación si los permisos están concedidos
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            iniciarLocationUpdates();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+
+    }
+
+    private void iniciarLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+            // Obtener la última ubicación conocida
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lastKnownLocation != null) {
+                double latitude = lastKnownLocation.getLatitude();
+                double longitude = lastKnownLocation.getLongitude();
+                ubicacion = "https://www.google.com/maps?q=" + latitude + "," + longitude;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarLocationUpdates();
+            } else {
+                Toast.makeText(this, "Permisos de ubicación denegados", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
     //smn
 

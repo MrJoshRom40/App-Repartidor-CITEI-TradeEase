@@ -24,6 +24,7 @@ public class Carga_Descarga extends AppCompatActivity {
     private int addedUses = 0; // Contador de usos del botón
     private static final int MAX_ADDED_USES = 2; // Máximo de tiempos adicionales permitidos
     private static final String CHANNEL_ID = "tiempo_terminado_canal";
+    String NumVenta;
 
     private CountDownTimer countDownTimer;
 
@@ -31,6 +32,9 @@ public class Carga_Descarga extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carga_descarga);
+
+        Intent intent = getIntent();
+        NumVenta = intent.getStringExtra("NumVenta");
 
         tempo = findViewById(R.id.temporizador);
         add10 = findViewById(R.id.Add10min);
@@ -166,5 +170,9 @@ public class Carga_Descarga extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel(); // Detener el temporizador para evitar fugas de memoria
         }
+    }
+
+    private void setPedidoCompletado(){
+
     }
 }

@@ -6,8 +6,9 @@ public class Pedido {
     String Telefono;
     String NumeroDeVenta;
     String EstadoDelpedido;
+    String LongitudPedido;
+    String LatitudPedido;
 
-//hols
     public String getNombrecliente() {
         return Nombrecliente;
     }
@@ -46,5 +47,21 @@ public class Pedido {
 
     public void setEstadoDelpedido(String estadoDelpedido) {
         EstadoDelpedido = estadoDelpedido;
+    }
+
+    public String getLongitudPedido() {
+        return LongitudPedido;
+    }
+
+    public void setLongitudPedido(String longitudPedido) {
+        LongitudPedido = longitudPedido;
+    }
+
+    public String getLatitudPedido() {
+        return LatitudPedido;
+    }
+
+    public void setLatitudPedido(String latitudPedido) {
+        LatitudPedido = latitudPedido;
     }
 }
