@@ -33,50 +33,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onCreate();
         createNotificationChannel();
     }
-//smn
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        Calendar calendar = Calendar.getInstance();
+        /*Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY);
-        int minutos = calendar.get(Calendar.MINUTE);
+        int minutos = calendar.get(Calendar.MINUTE);*/
+        notificacionInicio();
+        //notificacionFinal();
+    }
 
-        if (hora == 9 && minutos <= 30) {
-            try {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.citei)
-                        .setContentTitle("CITEI TradeEase")
-                        .setContentText("Hola mi chambeador, hora de iniciar! 😎")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOngoing(false);
+    // Método para crear el canal de notificación
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notificaciones de CITEI";
+            String description = "Canal para notificaciones de CITEI";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
 
-                // Verificar permisos y mostrar la notificación
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    notificationManager.notify(1, builder.build());
-                } else {
-                    Log.w("MyFirebaseMessagingService", "No se otorgaron permisos para las notificaciones.");
-                    // Aquí puedes manejar la solicitud de permisos si es necesario
-                }
-                // Usamos Handler para iniciar la actividad en el hilo principal
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra("Fomulario", "Formulario1P1");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  // Importante para iniciar actividad desde servicio
-                    startActivity(intent);
-                });
-            } catch (Exception e) {
-                Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
             }
-        } else{
-            if(Pedidos.isEmpty() ){
-                return;
-            } else{
-                for(Pedido pedido : Pedidos){
-                    if(pedido.getEstadoDelpedido().equals("Foraneo")){
-                        return;
-                    }
-                }
-                try {
+        }
+    }
+
+    private void notificacionFinal(){
+        try {
             // Crear los intents para las acciones
             Intent regresar = new Intent(this, Regresar.class);
             PendingIntent action1PendingIntent = PendingIntent.getBroadcast(
@@ -107,25 +91,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } catch (Exception e) {
             Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
         }
-            }
-
-
-        }
     }
 
-    // Método para crear el canal de notificación
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notificaciones de CITEI";
-            String description = "Canal para notificaciones de CITEI";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+    private void notificacionInicio(){
+        try {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.citei)
+                    .setContentTitle("CITEI TradeEase")
+                    .setContentText("Hola mi chambeador, hora de iniciar! 😎")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOngoing(false);
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
+            // Verificar permisos y mostrar la notificación
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(2, builder.build());
+            } else {
+                Log.w("MyFirebaseMessagingService", "No se otorgaron permisos para las notificaciones.");
+                // Aquí puedes manejar la solicitud de permisos si es necesario
             }
+            // Usamos Handler para iniciar la actividad en el hilo principal
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("Fomulario", "Formulario1P1");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  // Importante para iniciar actividad desde servicio
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            Log.e("MyFirebaseMessagingService", "Error al mostrar la notificación: " + e.getMessage());
         }
     }
 }

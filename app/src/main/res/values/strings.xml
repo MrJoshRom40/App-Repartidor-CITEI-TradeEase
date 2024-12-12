@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Repartidor</string>
+    <string name="default_notification_channel_id">com.example.repartidor.default</string>
 </resources>

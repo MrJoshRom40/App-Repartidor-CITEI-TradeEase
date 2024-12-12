@@ -145,6 +145,9 @@ public class Formulario2 extends AppCompatActivity {
                     interior = Interior.getText().toString();
                     comentario = comentarios.getText().toString();
                     enviarDatos();
+                    Intent intent = new Intent(Formulario2.this, MainActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(Formulario2.this, "Has terminado tu jornada labora con exito", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -285,6 +288,6 @@ public class Formulario2 extends AppCompatActivity {
 
     private boolean validarCampos(){
         return Sonidos.getText().toString().isEmpty() || Golpes.getText().toString().isEmpty() || Interior.getText().toString().isEmpty() ||
-                comentarios.getText().toString().isEmpty() || !isKilometraje || !isGasolina;
+                !isKilometraje || !isGasolina;
     }
 }

@@ -19,17 +19,19 @@ public class UbcationLocater  implements LocationListener {
     private final Context context;
     private double longitudDestino;
     private double latitudDestino;
+    private boolean isFinal;
     private static final double radioDestino = 20.0;//establecer un radio de 20 metros para cada destino
     private final Class<?> targetActivity;
 
     private String NumVenta;
 
-    public UbcationLocater(String longitudDestino, String latitudDestino, Context context, Class<?> targetActivity, String NumVenta) {
+    public UbcationLocater(String longitudDestino, String latitudDestino, Context context, Class<?> targetActivity, String NumVenta, boolean ultimoPedido) {
         this.longitudDestino = Double.parseDouble(longitudDestino);
         this.latitudDestino = Double.parseDouble(latitudDestino);
         this.context = context;
         this.targetActivity = targetActivity;
         this.NumVenta = NumVenta;
+        this.isFinal = ultimoPedido;
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
@@ -60,9 +62,14 @@ public class UbcationLocater  implements LocationListener {
 
             // Cambiar a otra actividad
             Intent intent = new Intent(context, targetActivity);
-            intent.putExtra("NumVenta", NumVenta);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Agregar el flag necesario
+            if(NumVenta.equals("Formulario2")){
+                intent.putExtra("Fomulario", "Formulario2");
+            } else{
+                intent.putExtra("NumVenta", NumVenta);
+                intent.putExtra("EsFinal", isFinal);
+            }
             context.startActivity(intent);
-
             // Detener actualizaciones de ubicación
             stopTracking();
         }

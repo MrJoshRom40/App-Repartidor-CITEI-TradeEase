@@ -209,6 +209,7 @@ public class Formulario1P1 extends AppCompatActivity {
                 if(validarCampos()){
                     Toast.makeText(Formulario1P1.this, "Llene todos los campos del formulario", Toast.LENGTH_SHORT).show();
                 } else {
+
                     enviarDatos();
                 }
             }

@@ -29,11 +29,14 @@ public class Regresar extends BroadcastReceiver {
 
     private static final String CHANNEL_ID = "CITEI_Channel"; // Canal para la notificación
     private static final int NOTIFICATION_ID = 2; // ID único para la notificación
+    private UbcationLocater ubcationLocater;
 
     private Conexion conexion = new Conexion();
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(1); // Cancela la notificación con ID 1
 
         if(!Global.PedidosAsignados.Pedidos.isEmpty()){
             for(Pedido pedido: Global.PedidosAsignados.Pedidos){ //Cambiar el estado de los pedidos a pendiente
@@ -41,8 +44,9 @@ public class Regresar extends BroadcastReceiver {
             }
             Global.PedidosAsignados.Pedidos.clear();//Eliminar mi lista
         }
-
-        String msg = "Hola administrador!\nSoy " + MainActivity.sendName() + "Te informo que voy de regreso a la empresa 👍";
+        String msg = "Hola administrador!\nSoy " + MainActivity.sendName() + ", Te informo que voy de regreso a la empresa 👍";
+        ubcationLocater = new UbcationLocater("-103.46810447746273","20.794712730796924", context, MainActivity.class, "Formulario2", false);
+        ubcationLocater.startTracking();
         sendMensaje(context, msg);
         showNotification(context);
     }
@@ -70,15 +74,16 @@ public class Regresar extends BroadcastReceiver {
         // Crear el canal de notificación (para Android 8+)
         createNotificationChannel(context);
 
-        // Intent para redirigir a la actividad al hacer clic en la notificación
-        Intent redirectIntent = new Intent(context, MainActivity.class); // Cambia `MainActivity.class` por tu actividad destino
-        redirectIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // Intent para abrir Google Maps con la dirección
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=Diplomáticos+4716,+Jardines+de+Guadalupe,+45030+Zapopan,+Jal.");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
 
         // PendingIntent para manejar el clic en la notificación
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
-                redirectIntent,
+                mapIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
@@ -86,7 +91,7 @@ public class Regresar extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.citei) // Icono de la notificación
                 .setContentTitle("Notificación de Regreso")
-                .setContentText("Haz clic para abrir detalles de regreso a la empresa.")
+                .setContentText("Haz clic para regresar a la empresa.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent) // Asociar el PendingIntent
                 .setAutoCancel(true); // Desaparece al hacer clic
@@ -123,7 +128,7 @@ public class Regresar extends BroadcastReceiver {
 
     private void actualizarEstadoPedido(Context context, String numVenta) {
         // URL del archivo PHP en tu servidor
-        String url = conexion.getURL_BASE() + "setPedidoPendiente?NumVenta=" + numVenta;
+        String url = conexion.getURL_BASE() + "pedidosP.php?NumVenta=" + numVenta;
 
         // Crear una instancia de RequestQueue
         RequestQueue queue = Volley.newRequestQueue(context);

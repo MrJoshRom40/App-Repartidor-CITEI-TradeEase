@@ -6,25 +6,40 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import Pojo.Conexion;
+
 public class Carga_Descarga extends AppCompatActivity {
 
     private TextView tempo;
-    private Button add10;
+    private Button add10, terminar;
     private long tempoenmilis = 20 * 1000; // Timer inicial de 20 segundos
     private final long SECOND_TIMER = 10 * 1000; // Cada temporizador adicional de 10 segundos
     private int addedUses = 0; // Contador de usos del botón
     private static final int MAX_ADDED_USES = 2; // Máximo de tiempos adicionales permitidos
     private static final String CHANNEL_ID = "tiempo_terminado_canal";
-    String NumVenta;
+    private Conexion conexion = new Conexion();
+    private String NumVenta;
+    private boolean isFinal;
+    private UbcationLocater ubcationLocater;
 
     private CountDownTimer countDownTimer;
 
@@ -35,9 +50,11 @@ public class Carga_Descarga extends AppCompatActivity {
 
         Intent intent = getIntent();
         NumVenta = intent.getStringExtra("NumVenta");
+        isFinal = intent.getBooleanExtra("EsFinal", false);
 
         tempo = findViewById(R.id.temporizador);
         add10 = findViewById(R.id.Add10min);
+        terminar = findViewById(R.id.Terminar_temporizador);
 
         // Crear el canal de notificación
         crearCanalNotificacion();
@@ -59,6 +76,16 @@ public class Carga_Descarga extends AppCompatActivity {
                 } else {
                     add10.setEnabled(false); // Deshabilitar el botón
                 }
+            }
+        });
+
+        terminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+                redirectToAnotherActivity();
             }
         });
     }
@@ -123,9 +150,13 @@ public class Carga_Descarga extends AppCompatActivity {
     }
 
     private void redirectToAnotherActivity() {
-        Intent intent = new Intent(Carga_Descarga.this, Inicio.class);
+        setPedidoCompletado();
+        if(!Global.PedidosAsignados.Pedidos.isEmpty()){
+            Global.PedidosAsignados.Pedidos.remove(0);
+        }
+        Intent intent = new Intent(Carga_Descarga.this, Splash.class);
         startActivity(intent);
-        finish(); // Cerrar esta actividad
+        finish();
     }
 
     private void updateTimerText() {
@@ -173,6 +204,40 @@ public class Carga_Descarga extends AppCompatActivity {
     }
 
     private void setPedidoCompletado(){
+        // URL del archivo PHP en tu servidor
+        String url = conexion.getURL_BASE() + "setPedidoEntregado.php?NumVenta=" + NumVenta;
+
+        // Crear una instancia de RequestQueue
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Crear la solicitud StringRequest
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("Respuesta del servidor: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Manejar errores
+                        System.out.println("Error: " + error.getMessage());
+                    }
+                }
+        );
+
+        // Agregar la solicitud a la cola
+        queue.add(stringRequest);
+    }
+
+    private void goToCITEI(Context context){
+        String uri = "google.navigation:q=" + Uri.encode("Diplomáticos 4716, Jardines de Guadalupe, 45030 Zapopan, Jal.");
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        context.startActivity(intent);
 
     }
 }

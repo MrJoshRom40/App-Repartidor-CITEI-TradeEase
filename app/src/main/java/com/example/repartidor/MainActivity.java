@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText usuario, contra;
     private Button logear;
     String formulario = "";
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     public static Repartidor repartidor = new Repartidor();
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         formulario = i.getStringExtra("Fomulario");
 
-        requestPermission();
+        requestPermissions();
         getDeviceToken();
 
         usuario = findViewById(R.id.usr);
@@ -145,6 +146,97 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
+
+
+    public static String sendName(){
+        return repartidor.getNombre();
+    }
+
+    public static String sendNomina(){
+        return repartidor.getNomina();
+    }
+
+    public static boolean isEditTextEmpty(@NonNull EditText editText){
+        String txt = editText.getText().toString();
+        if(txt.isEmpty())
+            return true;
+        return false;
+    }
+
+    public void getDeviceToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful()){
+                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                    return;
+                }
+                String token = task.getResult();
+                Log.d("", "Token: " + token);
+            }
+        });
+    }
+
+    private void requestPermissions() {
+        // Manejar permisos según la versión de Android
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 y superior
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.FOREGROUND_SERVICE_LOCATION,
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                }, LOCATION_PERMISSION_REQUEST_CODE);
+            } else {
+                // Permisos ya concedidos
+                iniciarServicio();
+            }
+        } else {
+            // Android 12 y anteriores
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.FOREGROUND_SERVICE_LOCATION
+                }, LOCATION_PERMISSION_REQUEST_CODE);
+            } else {
+                // Permisos ya concedidos
+                iniciarServicio();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            boolean allPermissionsGranted = false;
+
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = true;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                iniciarServicio(); // Todos los permisos concedidos
+            } else {
+                Toast.makeText(this, "Permisos necesarios no concedidos", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void iniciarServicio() {
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startForegroundService(serviceIntent); // Inicia el servicio de ubicación
+    }
+
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = conexion.getURL_BASE() + "Pedidos.php?nomina=" + nomina;
@@ -166,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                         pedido.setEstadoDelpedido(obj.getString("EstadoPedido"));
                         pedido.setLongitudPedido(obj.getString("LongitudPedido"));
                         pedido.setLatitudPedido(obj.getString("LatitudPedido"));
+                        pedido.setEsForaneo(obj.getString("EsForaneo"));
                         PedidosAsignados.Pedidos.add(pedido);
                     }
                 } catch (JSONException e) {
@@ -181,75 +274,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(stringRequest);
-    }
-
-    public static String sendName(){
-        return repartidor.getNombre();
-    }
-
-    public static String sendNomina(){
-        return repartidor.getNomina();
-    }
-
-    public static boolean isEditTextEmpty(@NonNull EditText editText){
-        String txt = editText.getText().toString();
-        if(txt.isEmpty())
-            return true;
-        return false;
-    }
-
-    public void requestPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permiso concedido", Toast.LENGTH_SHORT).show();
-            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                showPermissionExplanationDialog();
-            } else{
-                resultLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
-            }
-        } else{
-            getDeviceToken();
-        }
-    }
-
-    private ActivityResultLauncher<String> resultLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), isGranted ->{
-                if(isGranted){
-
-                }
-                else{
-
-                }
-            }
-    );
-
-    private void showPermissionExplanationDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Permiso Necesario")
-                .setMessage("Esta aplicación necesita el permiso de notificaciones para funcionar correctamente.")
-                .setPositiveButton("Conceder", (dialog, which) -> resultLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS))
-                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
-                .show();
-    }
-
-    public void getDeviceToken(){
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if(!task.isSuccessful()){
-                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-                    return;
-                }
-                String token = task.getResult();
-                Log.d("", "Token: " + token);
-            }
-        });
     }
 }

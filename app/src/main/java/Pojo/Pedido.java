@@ -8,6 +8,7 @@ public class Pedido {
     String EstadoDelpedido;
     String LongitudPedido;
     String LatitudPedido;
+    String EsForaneo;
 
     public String getNombrecliente() {
         return Nombrecliente;
@@ -63,5 +64,13 @@ public class Pedido {
 
     public void setLatitudPedido(String latitudPedido) {
         LatitudPedido = latitudPedido;
+    }
+
+    public String getEsForaneo() {
+        return EsForaneo;
+    }
+
+    public void setEsForaneo(String esForaneo) {
+        EsForaneo = esForaneo;
     }
 }

@@ -65,55 +65,35 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
         pedidoViewHolder.direccion.setText(PedidosAsignados.Pedidos.get(i).getDireccion());
         pedidoViewHolder.telefono.setText(PedidosAsignados.Pedidos.get(i).getTelefono());
         pedidoViewHolder.numventa.setText(PedidosAsignados.Pedidos.get(i).getNumeroDeVenta());
-        String latitud = PedidosAsignados.Pedidos.get(i).getLatitudPedido();
-        String longitud = PedidosAsignados.Pedidos.get(i).getLongitudPedido();
-
 
         pedidoViewHolder.direccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String direccionPedido = pedidoViewHolder.direccion.getText().toString();
-                ubcationLocater = new UbcationLocater(longitud,latitud, context, Carga_Descarga.class, pedidoViewHolder.numventa.getText().toString());
+                String latitud = PedidosAsignados.Pedidos.get(0).getLatitudPedido();
+                String longitud = PedidosAsignados.Pedidos.get(0).getLongitudPedido();
+                ubcationLocater = new UbcationLocater(longitud,latitud, context, Carga_Descarga.class, pedidoViewHolder.numventa.getText().toString(), false);
                 ubcationLocater.startTracking();
                 navigateToLocation(direccionPedido);
                 showNotification();
             }
         });
 
-        switch (PedidosAsignados.Pedidos.get(i).getEstadoDelpedido()){
-            case "Foraneo":{
-                pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.morado));
-                break;
-            }
-            case "Pendiente":{
-                pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.rojo));
-                break;
-            }
-            default:{
-                pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.azul));
-                break;
+        if(PedidosAsignados.Pedidos.get(i).getEsForaneo().equals("Sí")){
+            pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.morado));
+        } else{
+            switch (PedidosAsignados.Pedidos.get(i).getEstadoDelpedido()) {
+                case "Pendiente": {
+                    pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.rojo));
+                    break;
+                }
+                default: {
+                    pedidoViewHolder.carta.setCardBackgroundColor(context.getResources().getColor(R.color.azul));
+                    break;
+                }
             }
         }
 
-    }
-
-    private void obtenerCoordenadas(String direccion) {
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        try {
-            // Obtener una lista de direcciones (puede haber más de una coincidencia)
-            List<Address> direcciones = geocoder.getFromLocationName(direccion, 1);
-
-            if (direcciones != null && !direcciones.isEmpty()) {
-                Address direccionObtenida = direcciones.get(0);
-
-
-            } else {
-                System.out.println("No se encontraron coordenadas para la dirección.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error al obtener las coordenadas: " + e.getMessage());
-        }
     }
 
     @Override
@@ -155,7 +135,7 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
                 .setContentText("Tienes Problemas\nHaz clic en mi para regresar. 😊")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
-                .setOngoing(true) // Para hacer que la notificación sea persistente
+                .setOngoing(true)
                 .setAutoCancel(true); // No se cancela al hacer clic
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
