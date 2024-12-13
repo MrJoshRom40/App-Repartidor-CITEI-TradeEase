@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +33,23 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import Global.PedidosAsignados;
+import Pojo.Conexion;
 import Pojo.Pedido;
 
 public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.PedidoViewHolder> {
@@ -46,6 +58,8 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
     private static final String CHANNEL_ID = "canal_ejemplo";  // ID del canal de notificación
     private static final int NOTIFICATION_ID = 1;  // ID de la notificación
     private UbcationLocater ubcationLocater;
+    private Conexion conexion = new Conexion();
+
 
 
     @NonNull
@@ -154,5 +168,4 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.Pedi
             notificationManager.createNotificationChannel(channel);
         }
     }
-
 }

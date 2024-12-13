@@ -30,6 +30,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
+import Global.PedidosAsignados;
 import Pojo.Conexion;
 
 public class Problema extends AppCompatActivity {
@@ -203,7 +206,13 @@ public class Problema extends AppCompatActivity {
         }
 
         if(item.getItemId()==R.id.Descanso){
-            checkDescanso();
+            Calendar calendar = Calendar.getInstance();
+            int hora = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hora < 13 && hora > 15){
+                Toast.makeText(this, "Aun no tienes permiso de tomar el descanso", Toast.LENGTH_SHORT).show();
+            } else{
+                checkDescanso();
+            }
         }
 
         if(item.getItemId()==R.id.Salir){

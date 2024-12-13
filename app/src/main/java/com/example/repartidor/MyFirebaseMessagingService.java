@@ -22,6 +22,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Calendar;
 
+import Global.PedidosAsignados;
 import Pojo.Pedido;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -36,11 +37,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        /*Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY);
-        int minutos = calendar.get(Calendar.MINUTE);*/
-        notificacionInicio();
-        //notificacionFinal();
+        int minutos = calendar.get(Calendar.MINUTE);
+        if(hora == 9 && minutos < 30){
+            notificacionInicio();
+        } else{
+            for(Pedido p : Pedidos){
+                if(p.getEsForaneo().equals("Sí")){
+                    return;
+                }
+                notificacionFinal();
+            }
+        }
+
     }
 
     // Método para crear el canal de notificación

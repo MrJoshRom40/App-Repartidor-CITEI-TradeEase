@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 import Global.PedidosAsignados;
 import Pojo.Conexion;
 import Pojo.Pedido;
@@ -77,8 +79,14 @@ public class Inicio extends AppCompatActivity {
         }
 
         if(item.getItemId()==R.id.Descanso){
-            checkDescanso();
-            PedidosAsignados.Pedidos.clear();
+            Calendar calendar = Calendar.getInstance();
+            int hora = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hora < 13 && hora > 15){
+                Toast.makeText(this, "Aun no tienes permiso de tomar el descanso", Toast.LENGTH_SHORT).show();
+            } else{
+                checkDescanso();
+                PedidosAsignados.Pedidos.clear();
+            }
         }
 
         if(item.getItemId()==R.id.Salir){
