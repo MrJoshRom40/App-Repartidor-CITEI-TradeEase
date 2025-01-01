@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -55,6 +56,7 @@ public class Formulario1P1 extends AppCompatActivity {
     String rutaimagen;
     RadioGroup anticongelante, motor, transmision, frenos, hidraulica, llantas;
     ImageView Kilo, Gasolina;
+    EditText comentario;
     public Respuesta respuesta = new Respuesta();
 
     private Conexion conexion = new Conexion();
@@ -70,6 +72,7 @@ public class Formulario1P1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario1_p1);
         placas = findViewById(R.id.PlacasVehiculo);
+        comentario = findViewById(R.id.ComentariosF1);
 
         setPlacas();
 
@@ -209,9 +212,11 @@ public class Formulario1P1 extends AppCompatActivity {
                 if(validarCampos()){
                     Toast.makeText(Formulario1P1.this, "Llene todos los campos del formulario", Toast.LENGTH_SHORT).show();
                 } else {
-
                     enviarDatos();
+                    Intent intent = new Intent(Formulario1P1.this, MainActivity.class);
+                    startActivity(intent);
                 }
+
             }
         });
 
@@ -264,7 +269,7 @@ public class Formulario1P1 extends AppCompatActivity {
 
     private void abrirCamara(int tipo){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(intent.resolveActivity(getPackageManager()) == null){
+        if(intent.resolveActivity(getPackageManager()) != null){
             File imagenarchivo = null;
             try{
                 imagenarchivo = crearimagen("foto_", tipo);
@@ -326,7 +331,7 @@ public class Formulario1P1 extends AppCompatActivity {
     private void enviarDatos() {
         String url = conexion.getURL_BASE() + "formulario1.php?placas=" + respuesta.getPlaca() + "&antic=" + respuesta.getAnticongelante() + "&acem=" + respuesta.getAceiteMotor() +
                 "&acet=" + respuesta.getAceiteTransmision() + "&frenos=" + respuesta.getFrenos() + "&direccion=" + respuesta.getDireccionHidraulica() + "&kilo=" + respuesta.getKilometraje() + "&gas=" + respuesta.getNivelGasolina() +
-                "&fecha=" + formattedDate + "&duracion=" + 15 + "&repartidor=" + MainActivity.sendNomina() + "&llantas=" + respuesta.getNivelLlantas();
+                "&fecha=" + formattedDate + "&duracion=" + 15 + "&repartidor=" + MainActivity.sendNomina() + "&llantas=" + respuesta.getNivelLlantas() + "&Comentario=" + comentario.getText().toString();
 
         // Crear la solicitud GET con la URL completa
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

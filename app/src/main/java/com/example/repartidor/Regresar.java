@@ -45,7 +45,7 @@ public class Regresar extends BroadcastReceiver {
             Global.PedidosAsignados.Pedidos.clear();//Eliminar mi lista
         }
         String msg = "Hola administrador!\nSoy " + MainActivity.sendName() + ", Te informo que voy de regreso a la empresa 👍";
-        ubcationLocater = new UbcationLocater("-103.46810447746273","20.794712730796924", context, MainActivity.class, "Formulario2", false);
+        ubcationLocater = new UbcationLocater("-103.38901666666668","20.702575000000003", context, MainActivity.class, "Formulario2", false);
         ubcationLocater.startTracking();
         sendMensaje(context, msg);
         showNotification(context);

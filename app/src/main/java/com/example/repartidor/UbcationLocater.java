@@ -42,11 +42,9 @@ public class UbcationLocater  implements LocationListener {
             ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
-
         // Solicitar actualizaciones de ubicación
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
     }
-
 
     @Override
     public void onLocationChanged(@NonNull Location location) {

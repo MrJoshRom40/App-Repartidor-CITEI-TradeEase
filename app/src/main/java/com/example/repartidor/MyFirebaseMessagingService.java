@@ -37,7 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        Calendar calendar = Calendar.getInstance();
+        /*Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY);
         int minutos = calendar.get(Calendar.MINUTE);
         if(hora == 9 && minutos < 30){
@@ -49,8 +49,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 notificacionFinal();
             }
-        }
-
+        }*/
+        //notificacionInicio();
+        notificacionFinal();
     }
 
     // Método para crear el canal de notificación

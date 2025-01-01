@@ -147,7 +147,7 @@ public class Formulario2 extends AppCompatActivity {
                     enviarDatos();
                     Intent intent = new Intent(Formulario2.this, MainActivity.class);
                     startActivity(intent);
-                    Toast.makeText(Formulario2.this, "Has terminado tu jornada labora con exito", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Formulario2.this, "Has terminado tu jornada laboral con exito", Toast.LENGTH_SHORT).show();
                 }
             }
         });

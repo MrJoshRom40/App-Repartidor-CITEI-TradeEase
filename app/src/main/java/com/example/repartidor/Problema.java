@@ -68,7 +68,7 @@ public class Problema extends AppCompatActivity {
                 Toast.makeText(Problema.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
             } else{
                 String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
-                        ", te informo que he tenido un problema:\n" + problematxt.getText().toString();
+                        ", te informo que he tenido un problema:\n" + problematxt.getText().toString() + "\nEstoy en: " + ubicacion;
                 sendMensaje(mensaje);
             }
         });

@@ -73,7 +73,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
-                                android:text="Alto"
+                                android:text="Al nivel"
                                 android:textSize="25sp"/>
 
                             <RadioButton
@@ -126,7 +126,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
-                                android:text="Alto"
+                                android:text="Al nivel"
                                 android:textSize="25sp"/>
 
                             <RadioButton
@@ -179,7 +179,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
-                                android:text="Alto"
+                                android:text="Al nivel"
                                 android:textSize="25sp"/>
 
                             <RadioButton
@@ -232,7 +232,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
-                                android:text="Alto"
+                                android:text="Al nivel"
                                 android:textSize="25sp"/>
 
                             <RadioButton
@@ -285,7 +285,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
-                                android:text="Alto"
+                                android:text="Al nivel"
                                 android:textSize="25sp"/>
 
                             <RadioButton
@@ -423,6 +423,27 @@
 
                         </RadioGroup>
                     </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="10dp">
+
+                    <EditText
+                        android:id="@+id/ComentariosF1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/black"
+                        android:hint="Comentarios (opcional)"
+                        android:gravity="center"
+                        android:maxLength="100"
+                        android:textSize="20sp"
+                        />
+
                 </androidx.cardview.widget.CardView>
 
 
