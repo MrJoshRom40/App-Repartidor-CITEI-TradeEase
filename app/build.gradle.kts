@@ -59,6 +59,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics")
 
+    //Sweet alert
+    implementation("com.github.f0ris.sweetalert:library:1.5.6")
+
 }
 
 apply(plugin = "com.google.gms.google-services")

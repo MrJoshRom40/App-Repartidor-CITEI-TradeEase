@@ -22,7 +22,7 @@ public class Descanso extends AppCompatActivity {
     private TextView temp;
     private Button endt;
     private CountDownTimer countDownTimer;
-    private long tempoenmilis = 1 * 60 * 175;
+    private long tempoenmilis = 60 * 60 * 1000;
     private Vibrator vibrator;
     private MediaPlayer mediaPlayer;
 

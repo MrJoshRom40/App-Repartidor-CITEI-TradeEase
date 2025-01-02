@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 import Pojo.Conexion;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Reporte extends AppCompatActivity {
 
@@ -82,12 +83,34 @@ public class Reporte extends AppCompatActivity {
             }
 
             if (MainActivity.isEditTextEmpty(numv) || MainActivity.isEditTextEmpty(cant)) {
-                Toast.makeText(Reporte.this, "Hay que llenar todos los campos requeridos", Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(Reporte.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error")
+                        .setContentText("Debes de llenar todos los campos del reporte necesarios")
+                        .show();
             } else {
                 String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
                         ", te informo que en el pedido: " + numv.getText().toString() + "\nSe mandaron " + cant.getText().toString() + cantidadDe +
-                        "\n\n" + coment.getText().toString() + "\nEstoy en: " + ubicacion;
-                sendMensaje(mensaje);
+                        "\n" + coment.getText().toString() + "\nEstoy en: " + ubicacion;
+
+                new SweetAlertDialog(Reporte.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Alerta")
+                        .setContentText("¿Estas seguro de mandar el siguiente reporte al administrador?\n'" + mensaje + "'")
+                        .setConfirmText("Enviar")
+                        .setCancelText("Cancelar")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                sendMensaje(mensaje);
+                            }
+                        })
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
         });
 

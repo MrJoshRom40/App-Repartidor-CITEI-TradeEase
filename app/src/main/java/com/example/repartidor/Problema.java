@@ -34,6 +34,7 @@ import java.util.Calendar;
 
 import Global.PedidosAsignados;
 import Pojo.Conexion;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Problema extends AppCompatActivity {
 
@@ -65,11 +66,33 @@ public class Problema extends AppCompatActivity {
                 return;
             }
             if(MainActivity.isEditTextEmpty(problematxt)){
-                Toast.makeText(Problema.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(Problema.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error")
+                        .setContentText("Debes de redactar un problema para enviar un problema")
+                        .show();
             } else{
                 String mensaje = "Hola administrador!\nSoy " + MainActivity.sendName() +
                         ", te informo que he tenido un problema:\n" + problematxt.getText().toString() + "\nEstoy en: " + ubicacion;
-                sendMensaje(mensaje);
+
+                new SweetAlertDialog(Problema.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Alerta")
+                        .setContentText("¿Estas seguro de reportarle el siguiente problema al administrador?\n'" + mensaje + "'")
+                        .setConfirmText("Enviar")
+                        .setCancelText("Cancelar")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                sendMensaje(mensaje);
+                            }
+                        })
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
         });
 

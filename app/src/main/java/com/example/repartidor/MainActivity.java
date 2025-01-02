@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,13 +42,16 @@ import java.util.Map;
 import Global.PedidosAsignados;
 import Pojo.Conexion;
 import Pojo.Pedido;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText usuario, contra;
     private Button logear;
     String formulario = "";
+    boolean premisos = false;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
 
     public static Repartidor repartidor = new Repartidor();
 
@@ -59,6 +64,20 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         formulario = i.getStringExtra("Fomulario");
 
+        if("MatutinoEnviado".equals(formulario)){
+            new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Exito")
+                    .setContentText("¡Formulario matutino enviado correctamente!")
+                    .show();
+        } else if("VespertinoEnviado".equals(formulario)){
+            new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Exito")
+                    .setContentText("¡Formulario vespertino enviado correctamente!")
+                    .show();
+        } else if("RutaCancelada".equals(formulario)){
+
+        }
+
         requestPermissions();
         getDeviceToken();
 
@@ -70,7 +89,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isEditTextEmpty(usuario) || isEditTextEmpty(contra)){
-                    Toast.makeText(MainActivity.this, "Hay que llenar todos los campos", Toast.LENGTH_SHORT).show();
+                    new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Error")
+                            .setContentText("Debes de llenar los campos para loguearte 😉")
+                            .setConfirmText("Entendido")// Si quieres cambiar el texto del botón "OK"
+                            .show();
                 }
                 else{
                     String nomina = usuario.getText().toString().trim();
@@ -105,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                         repartidor.setNomina(nomina);
 
                         // Mostrar mensaje de bienvenida
-                        Toast.makeText(MainActivity.this, "Bienvenido " + repartidor.getNombre(), Toast.LENGTH_SHORT).show();
 
                         // Cargar los pedidos solo después de haber logueado exitosamente
                         cargar(nomina);
@@ -125,7 +147,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         // Si hay un error, mostrar el mensaje
-                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Ups..")
+                                .setContentText("Parece que no existes en mi sistema, por lo que no te dejaré pasar 😣")
+                                .setConfirmText("Chale, ok...")// Si quieres cambiar el texto del botón "OK"
+                                .show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -145,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
-
 
     public static String sendName(){
         return repartidor.getNombre();
@@ -183,32 +207,36 @@ public class MainActivity extends AppCompatActivity {
             // Android 13 y superior
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(this, android.Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(this, new String[]{
                         android.Manifest.permission.ACCESS_FINE_LOCATION,
                         android.Manifest.permission.FOREGROUND_SERVICE_LOCATION,
-                        android.Manifest.permission.POST_NOTIFICATIONS
+                        android.Manifest.permission.POST_NOTIFICATIONS,
+                        android.Manifest.permission.CAMERA
                 }, LOCATION_PERMISSION_REQUEST_CODE);
             } else {
-                // Permisos ya concedidos
-                iniciarServicio();
+                premisos = true;
             }
         } else {
             // Android 12 y anteriores
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.FOREGROUND_SERVICE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(this, new String[]{
                         android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.FOREGROUND_SERVICE_LOCATION
+                        android.Manifest.permission.FOREGROUND_SERVICE_LOCATION,
+                        android.Manifest.permission.CAMERA
                 }, LOCATION_PERMISSION_REQUEST_CODE);
             } else {
                 // Permisos ya concedidos
-                iniciarServicio();
+                premisos = true;
             }
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -225,17 +253,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (allPermissionsGranted) {
-                iniciarServicio(); // Todos los permisos concedidos
+                premisos = true; // Todos los permisos concedidos
             } else {
                 Toast.makeText(this, "Permisos necesarios no concedidos", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void iniciarServicio() {
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startForegroundService(serviceIntent); // Inicia el servicio de ubicación
-    }
+
 
     private void cargar(String nomina) {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -263,7 +288,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {

@@ -45,6 +45,7 @@ import java.util.Map;
 
 import Pojo.Conexion;
 import Pojo.Respuesta;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Formulario1P1 extends AppCompatActivity {
 
@@ -210,17 +211,19 @@ public class Formulario1P1 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(validarCampos()){
-                    Toast.makeText(Formulario1P1.this, "Llene todos los campos del formulario", Toast.LENGTH_SHORT).show();
+                    new SweetAlertDialog(Formulario1P1.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Error")
+                            .setContentText("Debes de llenar todos los campos del formulario necesarios")
+                            .show();
                 } else {
                     enviarDatos();
                     Intent intent = new Intent(Formulario1P1.this, MainActivity.class);
+                    intent.putExtra("Fomulario", "MatutinoEnviado");
                     startActivity(intent);
                 }
 
             }
         });
-
-
 
     }
 
@@ -310,7 +313,10 @@ public class Formulario1P1 extends AppCompatActivity {
             }
 
             Log.d("Imagen Guardada", "Ruta: " + rutaimagen);
-            Toast.makeText(this, "Imagen comprimida y guardada exitosamente", Toast.LENGTH_LONG).show();
+            new SweetAlertDialog(Formulario1P1.this, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Exito")
+                    .setContentText("Imagen comprimida y guardada exitosamente")
+                    .show();
         }
     }
 

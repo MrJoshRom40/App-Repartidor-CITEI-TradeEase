@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import Pojo.Conexion;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Formulario2 extends AppCompatActivity {
 
@@ -138,7 +139,10 @@ public class Formulario2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(validarCampos()){
-                    Toast.makeText(Formulario2.this, "Llene todos los campos del formulario", Toast.LENGTH_SHORT).show();
+                    new SweetAlertDialog(Formulario2.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Error")
+                            .setContentText("Debes de llenar todos los campos del formulario necesarios")
+                            .show();
                 } else {
                     sonidos = Sonidos.getText().toString();
                     golpe = Golpes.getText().toString();
@@ -146,6 +150,7 @@ public class Formulario2 extends AppCompatActivity {
                     comentario = comentarios.getText().toString();
                     enviarDatos();
                     Intent intent = new Intent(Formulario2.this, MainActivity.class);
+                    intent.putExtra("Fomulario", "VespertinoEnviado");
                     startActivity(intent);
                     Toast.makeText(Formulario2.this, "Has terminado tu jornada laboral con exito", Toast.LENGTH_SHORT).show();
                 }

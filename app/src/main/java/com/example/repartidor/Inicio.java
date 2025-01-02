@@ -27,10 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import Global.PedidosAsignados;
 import Pojo.Conexion;
 import Pojo.Pedido;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Inicio extends AppCompatActivity {
 
@@ -43,6 +45,35 @@ public class Inicio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
+
+        Intent intent = getIntent();
+        if(intent != null && Objects.equals(intent.getStringExtra("Login"), "smn")){
+            iniciarServicio();
+            new SweetAlertDialog(Inicio.this, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Bienvenid@")
+                    .setContentText(MainActivity.sendName())
+                    .show();
+        }
+
+        /*if(PedidosAsignados.Pedidos.isEmpty()){
+            new SweetAlertDialog(Inicio.this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Uff...")
+                    .setContentText("Parece que no tienes pedidos asignados, por lo que no debes de estar en la aplicación 😉")
+                    .setConfirmText("Entendido!")  // Si quieres cambiar el texto del botón "OK"
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            Intent c = new Intent(Inicio.this, MainActivity.class);//creo mi objeto cambio y lo igualo a un constructor el cual recibe por parametros el contexto y el lugar a donde va
+                            startActivity(c);
+                            PedidosAsignados.Pedidos.clear();
+                            finish();
+                            sDialog.dismissWithAnimation();  // Cierra el diálogo con animación
+                        }
+                    })
+                    .show();
+
+        }*/
+
 
 
         rv = findViewById(R.id.rvpedidos);
@@ -81,8 +112,12 @@ public class Inicio extends AppCompatActivity {
         if(item.getItemId()==R.id.Descanso){
             Calendar calendar = Calendar.getInstance();
             int hora = calendar.get(Calendar.HOUR_OF_DAY);
-            if(hora < 13 && hora > 15){
-                Toast.makeText(this, "Aun no tienes permiso de tomar el descanso", Toast.LENGTH_SHORT).show();
+            if(hora < 11 || hora > 17){
+                new SweetAlertDialog(Inicio.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Ups..")
+                        .setContentText("Aun no tienes permiso de tomar el descanso")
+                        .setConfirmText("Entendido")// Si quieres cambiar el texto del botón "OK"
+                        .show();
             } else{
                 checkDescanso();
                 PedidosAsignados.Pedidos.clear();
@@ -100,7 +135,10 @@ public class Inicio extends AppCompatActivity {
         return super.onOptionsItemSelected(item);//metodo que retorna la opcion que se selecciono
     }
 
-
+    public void iniciarServicio() {
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startForegroundService(serviceIntent); // Inicia el servicio de ubicación
+    }
 
     private void checkDescanso(){
         String url = conexion.getURL_BASE() + "descanso.php?Nomina=" + MainActivity.sendNomina(); // Cambia esta URL según corresponda
@@ -125,8 +163,11 @@ public class Inicio extends AppCompatActivity {
                                 startActivity(c);
                                 finish();
                             } else {
-                                // Descanso es igual a 1, mostrar mensaje
-                                Toast.makeText(Inicio.this, "Ya se ha usado el descanso", Toast.LENGTH_SHORT).show();
+                                new SweetAlertDialog(Inicio.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Ups..")
+                                        .setContentText("Ya has usado tu descanso del día")
+                                        .setConfirmText("Entendido")// Si quieres cambiar el texto del botón "OK"
+                                        .show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

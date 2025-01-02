@@ -21,6 +21,7 @@ public class Splash extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             // Cambiar a la actividad principal
             Intent intent = new Intent(Splash.this, Inicio.class);
+            intent.putExtra("Login", "smn");
             startActivity(intent);
             finish(); // Cierra la actividad actual para que no vuelva con el botón "Atrás"
         }, 2000); // Duración en milisegundos
